@@ -232,3 +232,8 @@ chmod +x scripts/generate-icons.sh
 ---
 
 (문서 자동 생성: Phase 3 진행 중 상태 요약)
+
+## Security
+
+- CI runs security checks (gitleaks secret scan, npm audit) and tests via `.github/workflows/ci-security.yml`.
+- See `docs/SECURITY-CHECKLIST.md` for recommended actions and runbook.
