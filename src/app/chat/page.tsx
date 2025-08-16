@@ -4,7 +4,7 @@ import Link from "next/link";
 
 interface ChatMessage {
   id: string;
-  role: "user" | "bot";
+  role: "user" | "bot" | "error";
   content: string;
 }
 
@@ -47,7 +47,7 @@ export default function ChatPage() {
         body: JSON.stringify({ messages: currentMessages }),
       });
       const data = await res.json();
-      if (data.reply) {
+      if (res.ok && data.reply) {
         setMessages((prev) => [
           ...prev,
           { id: crypto.randomUUID(), role: "bot", content: data.reply.trim() },
@@ -57,15 +57,15 @@ export default function ChatPage() {
           ...prev,
           {
             id: crypto.randomUUID(),
-            role: "bot",
-            content: "죄송해요. 응답을 불러오지 못했어요.",
+            role: "error",
+            content: `오류: ${data.message || "응답을 불러오지 못했습니다."}`,
           },
         ]);
       }
     } catch (e: any) {
       setMessages((prev) => [
         ...prev,
-        { id: crypto.randomUUID(), role: "bot", content: "서버 오류가 발생했습니다." },
+        { id: crypto.randomUUID(), role: "error", content: "서버 오류가 발생했습니다." },
       ]);
     } finally {
       setLoading(false);
@@ -105,8 +105,9 @@ export default function ChatPage() {
             <div
               className={`px-4 py-2 rounded-2xl max-w-[80%] text-sm leading-relaxed whitespace-pre-wrap shadow-sm ${m.role === "user"
                 ? "bg-gradient-to-r from-rose-400 to-amber-400 text-white"
-                : "bg-neutral-100 text-neutral-800"
-                }`}
+                : m.role === 'bot'
+                  ? "bg-neutral-100 text-neutral-800"
+                  : "bg-red-50 text-red-600 border border-red-200"}`}
             >
               {m.content}
             </div>

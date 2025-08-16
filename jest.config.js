@@ -13,6 +13,7 @@ const customJestConfig = {
     '^@/(.*)$': '<rootDir>/$1',
   },
   setupFiles: ['<rootDir>/jest.setup.js'],
+  testPathIgnorePatterns: ['<rootDir>/mobile/'],
 };
 
 module.exports = createJestConfig(customJestConfig);

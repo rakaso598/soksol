@@ -2,6 +2,16 @@
 
 익명 AI 멘탈 케어 웹/모바일 프로젝트
 
+## 변경 사항 요약 (최근 개선)
+- 표준화된 API 오류 포맷 `{ errorCode, message }`
+- 입력 검증 강화 (메시지 수/길이/총량/URL 차단)
+- Gemini 호출 재시도(최대 2회, 지수형 지연)
+- 슬라이딩 윈도 + 점증 지연 rate limit
+- User-Agent 단순 차단 리스트(curl/wget/python-requests)
+- WebView 보안 설정(incognito, cache off, mixed content 차단 등)
+- SECURITY.md / PRIVACY.md 문서 추가
+- Android release 빌드 스크립트 `scripts/build-android-release.sh`
+
 ## 0. 프로젝트 개요
 - 목표: 사용자의 마음 고민을 익명으로 털어놓고 비워내며 스스로 정리하도록 돕는 AI 동반자
 - 철학: 비움(저장 안 함) · 판단 없는 경청 · 마음의 성장
@@ -220,4 +230,5 @@ chmod +x scripts/generate-icons.sh
 위 사항은 현재 서비스 철학(비저장, 최소 데이터)에 부합하도록 외부 저장 불필요 구성.
 
 ---
+
 (문서 자동 생성: Phase 3 진행 중 상태 요약)
