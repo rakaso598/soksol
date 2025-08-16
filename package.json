@@ -10,7 +10,10 @@
     "test": "jest",
     "test:ci": "jest --runInBand",
     "lhci": "lhci autorun || echo 'LHCI skipped'",
-    "build:android:release": "bash scripts/build-android-release.sh"
+    "build:android:release": "bash scripts/build-android-release.sh",
+    "scan:secrets": "npx gitleaks detect --source=. --report=gitleaks-report.json || true",
+    "scan:staged": "npx gitleaks detect --staged --report=gitleaks-staged.json || true",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -37,6 +40,8 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "undici": "^7.13.0",
-    "@lhci/cli": "^0.14.0"
+    "@lhci/cli": "^0.14.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^14.0.0"
   }
 }
