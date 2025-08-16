@@ -19,28 +19,45 @@ export function getClient() {
 }
 
 const RATE_LIMIT = { windowMs: 60_000, max: 10 }; // 10 req / minute per ip
+const SOFT_JITTER_THRESHOLD = RATE_LIMIT.max - 2; // start slowing when 8+ in window
 const buckets = new Map<string, number[]>();
-function rateLimit(ip: string | undefined) {
-  if (!ip) return true;
+function rateLimitConsume(ip: string | undefined) {
+  if (!ip) return { allowed: true, count: 0 };
   const now = Date.now();
   const windowStart = now - RATE_LIMIT.windowMs;
   const arr = (buckets.get(ip) || []).filter((ts) => ts > windowStart);
-  if (arr.length >= RATE_LIMIT.max) return false;
+  if (arr.length >= RATE_LIMIT.max) return { allowed: false, count: arr.length };
   arr.push(now);
   buckets.set(ip, arr);
-  return true;
+  return { allowed: true, count: arr.length };
 }
+function sleep(ms: number) { return new Promise(r => setTimeout(r, ms)); }
 
 function safeLogError(e: any) {
   const msg = e?.message || String(e);
   console.error("[chat-api-error]", msg.substring(0, 300));
 }
 
+function classifyError(e: any): { status: number; message: string } {
+  const raw = (e?.message || "").toLowerCase();
+  if (raw.includes("abort") || raw.includes("timeout")) return { status: 504, message: "요청이 시간 초과되었습니다." };
+  if (raw.includes("429") || raw.includes("rate") || raw.includes("too many")) return { status: 429, message: "요청이 일시적으로 많습니다. 잠시 후 다시 시도해주세요." };
+  if (raw.includes("quota") || raw.includes("exceed")) return { status: 503, message: "모델 사용 한도가 잠시 초과되었습니다. 잠시 후 재시도해주세요." };
+  if (raw.includes("api key") || raw.includes("permission") || raw.includes("unauthorized") || raw.includes("403") || raw.includes("401")) return { status: 500, message: "API 인증 문제가 발생했습니다. 서비스 점검 후 다시 이용해주세요." };
+  return { status: 500, message: "서버 오류가 발생했습니다. 다시 시도해주세요." };
+}
+
 export async function POST(req: any) {
   try {
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.ip || "anon";
-    if (!rateLimit(ip)) {
+    const rl = rateLimitConsume(ip);
+    if (!rl.allowed) {
       return NextResponse.json({ error: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요." }, { status: 429 });
+    }
+    // Soft jitter delay when approaching limit
+    if (rl.count >= SOFT_JITTER_THRESHOLD) {
+      const delay = 150 + Math.random() * 650; // 150-800ms
+      await sleep(delay);
     }
     const body = await req.json().catch(() => ({}));
     const { messages } = body as { messages?: { role: string; content: string }[] };
@@ -67,10 +84,12 @@ export async function POST(req: any) {
       if (err.name === 'AbortError') {
         return NextResponse.json({ error: "요청이 시간 초과되었습니다." }, { status: 504 });
       }
-      throw err;
+      const mapped = classifyError(err);
+      safeLogError(err);
+      return NextResponse.json({ error: mapped.message }, { status: mapped.status });
     }
   } catch (e: any) {
     safeLogError(e);
-    return NextResponse.json({ error: e.message || "서버 오류" }, { status: 500 });
+    return NextResponse.json({ error: classifyError(e).message }, { status: classifyError(e).status });
   }
 }
