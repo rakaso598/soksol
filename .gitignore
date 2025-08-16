@@ -86,6 +86,10 @@ next-env.d.ts
 detect-secrets-results.txt
 snyk-report.json
 gitleaks-report.json
+
+# local/git history scan reports
+git-history-scan.txt
+git_grep_history_report.txt
 # end added
 
 # end mobile ignores
