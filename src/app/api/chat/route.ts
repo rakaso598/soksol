@@ -18,8 +18,30 @@ export function getClient() {
   return genAI;
 }
 
+const RATE_LIMIT = { windowMs: 60_000, max: 10 }; // 10 req / minute per ip
+const buckets = new Map<string, number[]>();
+function rateLimit(ip: string | undefined) {
+  if (!ip) return true;
+  const now = Date.now();
+  const windowStart = now - RATE_LIMIT.windowMs;
+  const arr = (buckets.get(ip) || []).filter((ts) => ts > windowStart);
+  if (arr.length >= RATE_LIMIT.max) return false;
+  arr.push(now);
+  buckets.set(ip, arr);
+  return true;
+}
+
+function safeLogError(e: any) {
+  const msg = e?.message || String(e);
+  console.error("[chat-api-error]", msg.substring(0, 300));
+}
+
 export async function POST(req: any) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.ip || "anon";
+    if (!rateLimit(ip)) {
+      return NextResponse.json({ error: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요." }, { status: 429 });
+    }
     const body = await req.json().catch(() => ({}));
     const { messages } = body as { messages?: { role: string; content: string }[] };
     const validation = validateMessages(messages);
@@ -33,12 +55,22 @@ export async function POST(req: any) {
     const model = client.getGenerativeModel({ model: "gemini-pro" });
     const prompt = `${SYSTEM_PROMPT}\n사용자 최신 메시지: ${userLatest}`;
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
-
-    return NextResponse.json({ reply: text });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
+    try {
+      const result = await model.generateContent(prompt, { signal: controller.signal as any });
+      clearTimeout(timeout);
+      const text = result.response.text();
+      return NextResponse.json({ reply: text });
+    } catch (err: any) {
+      clearTimeout(timeout);
+      if (err.name === 'AbortError') {
+        return NextResponse.json({ error: "요청이 시간 초과되었습니다." }, { status: 504 });
+      }
+      throw err;
+    }
   } catch (e: any) {
-    console.error(e);
+    safeLogError(e);
     return NextResponse.json({ error: e.message || "서버 오류" }, { status: 500 });
   }
 }

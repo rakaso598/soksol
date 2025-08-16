@@ -35,6 +35,8 @@ export const metadata: Metadata = {
     description: "흔적 없이 비우고, 판단 없는 경청으로 마음을 돌보는 치유 여정",
     images: ["/og.png"],
   },
+  manifest: "/manifest.json",
+  themeColor: "#f87171",
 };
 
 export default function RootLayout({
@@ -42,6 +44,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko" className="h-full">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#f87171" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-gradient-to-b from-rose-50 via-white to-amber-50 text-neutral-800`}
       >

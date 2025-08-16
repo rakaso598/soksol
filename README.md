@@ -67,14 +67,15 @@ Vercel 배포 시 동일 키 추가.
 - 모델 호출 실패 시 일반적 오류 메시지 반환.
 
 ## 8. 향후 작업(우선순위 순)
-1. (모바일) 아이콘 / adaptive icon 제작 및 리소스 교체 (scripts/icon-generate.sh 참고 예정)
-2. Splash Screen (선택) – 브랜드 컬러 그라데이션 or 흰 배경 로고
+1. (모바일) 아이콘 / adaptive icon 제작 및 리소스 교체 (scripts/icon-generate.sh 참고 예정) ✅ 스크립트 추가됨 (`scripts/generate-icons.sh`)
+2. Splash Screen (선택) – 브랜드 컬러 그라데이션 or 흰 배경 로고 (기본 흰 배경 + 아이콘 적용 대기)
 3. Gradle signing 설정 + .gitignore 키 제외 (문서화 완료)
 4. Release 빌드 테스트 (real device)
-5. 웹 성능/메타: Open Graph 이미지 (og.png 추가 완료), PWA 옵션 검토
-6. 안전 가이드 문구 추가 (footer 반영 완료)
-7. Gemini 응답 토큰/비용 모니터링 방안 문서화
+5. 웹 성능/메타: Open Graph 이미지 (og.png 완료), PWA (manifest + next-pwa 설정 완료)
+6. 안전 가이드 문구 추가 (footer 반영 완료 + 챗 첫 진입 1회성 위기 안내 배너 추가)
+7. Gemini 응답 토큰/비용 모니터링 방안 문서화 (TODO)
 8. 간단 사용자 피드백 컴포넌트 (비저장 단발성, 선택적)
+9. Rate Limit(간단 in-memory) 적용하여 API 남용 방지 ✅
 
 ## 9. 배포
 - 웹: Vercel (현재 수동 설정 필요) → Production URL 확정 후 RN `WEB_URL` 치환
@@ -153,6 +154,47 @@ rm -f tmp_fore.png tmp_full.png
 Splash(안드로이드 12+): `values/styles.xml` 또는 `drawable/splash_background.xml` 추가 후 theme 속성 `android:windowSplashScreenBackground` 설정.
 
 실제 스크립트/리소스는 추후 `assets/branding/` 생성 후 반영.
+
+### 실제 스크립트 사용
+```bash
+chmod +x scripts/generate-icons.sh
+./scripts/generate-icons.sh assets/branding/logo.png
+```
+생성:
+- PWA: `public/icons/icon-192.png`, `icon-512.png`
+- Android: 각 `mipmap-*dpi/` ic_launcher* 갱신 (필요 시 git diff 확인)
+
+## 16. PWA 구성
+- `next-pwa` + `next.config.ts` 래핑 (개발 모드 자동 비활성)
+- `public/manifest.json` 작성
+- `layout.tsx`에 `<link rel="manifest">`, meta theme-color 추가
+- runtimeCaching 전략 (`next.config.ts`):
+  - google-fonts: CacheFirst 1년
+  - next-image: StaleWhileRevalidate 30일
+  - next-static: CacheFirst 30일
+  - api/chat: NetworkOnly (캐싱 금지)
+  - misc fallback: StaleWhileRevalidate 7일
+
+## 17. API Rate Limiting
+간단한 in-memory (IP 기준 1분 10회). 서버리스/다중 인스턴스 배포 시 외부 스토리지/Edge KV 필요 (정책상 미사용).
+
+## 18. 챗 위기 안내 1회성 배너
+- `sessionStorage` key: `soksol_crisis_shown`
+- 첫 방문에만 렌더링, 닫기 버튼 제공.
+
+## 19. Splash / Branding 업데이트
+- Android Splash: `drawable/splash_background.xml` (그라데이션) + `styles.xml` 에 적용
+- 로고 소스: `assets/branding/logo.svg` (SVG → PNG 변환 가능)
+- 아이콘 스크립트: `scripts/generate-icons.sh` (ImageMagick 필요). 환경 미설치 시 에러 출력.
+
+## 20. Gemini 호출 안정성
+- AbortController 기반 15초 타임아웃 → 504 처리
+- 오류 로깅 시 PII 최소화 (`safeLogError`) – 메시지 내용 전문 미저장/미출력
+
+## 21. 오류 모니터링 (준비)
+- `@sentry/nextjs` 설치 및 `sentry.client.config.ts`, `sentry.server.config.ts` 생성
+- PII/채팅 내용 제거: beforeSend/ beforeBreadcrumb 에서 body 삭제 및 URL path만 유지
+- 환경 변수: `SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN` (예: .env.local) – 현재 비어있으면 비활성
 
 ---
 (문서 자동 생성: Phase 3 진행 중 상태 요약)
