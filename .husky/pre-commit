@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Execute the project's pre-commit secret scanner
+bash ./scripts/pre-commit-secrets.sh
+
+# Run lint-staged if available
+npx --no-install lint-staged || true
