@@ -12,7 +12,6 @@
 ./
   src/app/              # Next.js (웹)
   mobile/soksol_mobile/  # 실제 React Native 프로젝트 (WebView 패키징)
-  soksol_mobile/         # (LEGACY) 초기 실험용 RN WebView – 사용 안 함, 삭제 예정
   public/                # 웹 정적 자산
   .env.local.example     # 환경 변수 예시
   README.md              # (현재 문서)
@@ -68,12 +67,12 @@ Vercel 배포 시 동일 키 추가.
 - 모델 호출 실패 시 일반적 오류 메시지 반환.
 
 ## 8. 향후 작업(우선순위 순)
-1. (모바일) 아이콘 / adaptive icon 제작 및 리소스 교체
+1. (모바일) 아이콘 / adaptive icon 제작 및 리소스 교체 (scripts/icon-generate.sh 참고 예정)
 2. Splash Screen (선택) – 브랜드 컬러 그라데이션 or 흰 배경 로고
-3. Gradle signing 설정 + .gitignore 키 제외
+3. Gradle signing 설정 + .gitignore 키 제외 (문서화 완료)
 4. Release 빌드 테스트 (real device)
-5. 웹 성능/메타: Open Graph 이미지 추가, PWA 옵션 검토(오프라인 필요성 낮음)
-6. 안전 가이드 문구 추가 (위기 상황 도움 안내 footer or 첫 응답)
+5. 웹 성능/메타: Open Graph 이미지 (og.png 추가 완료), PWA 옵션 검토
+6. 안전 가이드 문구 추가 (footer 반영 완료)
 7. Gemini 응답 토큰/비용 모니터링 방안 문서화
 8. 간단 사용자 피드백 컴포넌트 (비저장 단발성, 선택적)
 
@@ -126,6 +125,34 @@ npm run test
 
 추가 주석:
 - `soksol_mobile/` 폴더는 TypeScript `exclude` 처리됨. 실제 모바일 변경은 `mobile/soksol_mobile/` 만 사용.
+
+## 14. 신규 메타 & 안전 안내
+- `public/og.png` 추가 및 `layout.tsx` 메타(`openGraph.images`, `twitter`) 설정.
+- Footer 에 위기 대응 안내 번호(112 / 1393 등) 및 비의료 서비스 고지 추가.
+
+## 15. 모바일 아이콘 / 스플래시 자동화(초안)
+`scripts/generate-icons.sh` (추가 예정) 예시 계획:
+```
+#!/usr/bin/env bash
+# 요구: ImageMagick, inkscape (SVG → PNG), base source: assets/logo.svg
+set -e
+SRC=assets/logo.png
+ANDROID_RES=mobile/soksol_mobile/android/app/src/main/res
+# Adaptive icon foreground/background (foreground 432x432 dp in 1080x1080)
+convert $SRC -resize 432x432 tmp_fore.png
+convert $SRC -resize 1080x1080 tmp_full.png
+# Example outputs
+sizes=(48 72 96 144 192)
+for s in "${sizes[@]}"; do
+  mkdir -p "$ANDROID_RES/mipmap-${s}dpi" || true
+  convert $SRC -resize ${s}x${s} "$ANDROID_RES/mipmap-${s}dpi/ic_launcher.png"
+  cp "$ANDROID_RES/mipmap-${s}dpi/ic_launcher.png" "$ANDROID_RES/mipmap-${s}dpi/ic_launcher_round.png"
+done
+rm -f tmp_fore.png tmp_full.png
+```
+Splash(안드로이드 12+): `values/styles.xml` 또는 `drawable/splash_background.xml` 추가 후 theme 속성 `android:windowSplashScreenBackground` 설정.
+
+실제 스크립트/리소스는 추후 `assets/branding/` 생성 후 반영.
 
 ---
 (문서 자동 생성: Phase 3 진행 중 상태 요약)

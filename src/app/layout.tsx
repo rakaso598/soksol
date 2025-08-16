@@ -20,6 +20,20 @@ export const metadata: Metadata = {
     title: "속솔 | 익명 AI 멘탈 케어",
     description: "흔적 없이 비우고, 판단 없는 경청으로 마음을 돌보고, 스스로를 찾는 여정",
     type: "website",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "속솔 – 익명 AI 멘탈 케어",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "속솔 | 익명 AI 멘탈 케어",
+    description: "흔적 없이 비우고, 판단 없는 경청으로 마음을 돌보는 치유 여정",
+    images: ["/og.png"],
   },
 };
 
@@ -33,9 +47,12 @@ export default function RootLayout({
       >
         {/* Global Header could be inserted here if needed */}
         <div className="flex-1 flex flex-col">{children}</div>
-        <footer className="text-center text-xs text-neutral-500 py-6 border-t mt-12 bg-white/40 backdrop-blur">
+        <footer className="text-center text-xs text-neutral-500 py-6 border-t mt-12 bg-white/40 backdrop-blur space-y-2">
           <p className="mb-1">
             이 서비스는 사용자의 대화 내용을 저장하지 않습니다. (개인정보 처리방침: 수집 대상 없음)
+          </p>
+          <p className="text-[11px] leading-relaxed text-neutral-400">
+            위기(자해·타해 우려, 즉각적 위험) 상황이라면 112, 1393(자살 예방 상담), 1588-9191(정신건강 상담) 등 긴급/전문 기관에 즉시 도움을 요청하세요. 본 서비스는 의료 진단이나 치료가 아닙니다.
           </p>
           <p>© {new Date().getFullYear()} SokSol. All rights reserved.</p>
         </footer>
