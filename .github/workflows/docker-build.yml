@@ -1,0 +1,62 @@
+name: CI - Docker Build & Scan
+
+on:
+  push:
+    branches: ["main", "dev"]
+  pull_request:
+    branches: ["main", "dev"]
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  build-and-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        if: secrets.GHCR_TOKEN != ''
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: ghcr.io/${{ github.repository_owner }}/soksol:latest
+
+      - name: Install Trivy
+        uses: aquasecurity/trivy-action@v1
+        with:
+          format: 'table'
+          exit-code: '1'
+          scan-type: 'image'
+          image-ref: ghcr.io/${{ github.repository_owner }}/soksol:latest
+
+      - name: Upload Trivy report
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report
+          path: trivy-report.txt
+
+      - name: Optionally push image to GHCR
+        if: secrets.GHCR_TOKEN != ''
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/soksol:latest
