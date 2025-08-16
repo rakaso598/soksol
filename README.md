@@ -1,3 +1,30 @@
+# SokSol (속솔)
+
+익명 AI 멘탈 케어 웹 서비스.
+
+## 개발 실행
+```bash
+npm install
+npm run dev
+```
+
+## 환경 변수
+루트에 `.env.local` 파일 생성 후 아래 키 설정:
+```
+GEMINI_API_KEY=YOUR_KEY_HERE
+```
+(배포 시 Vercel 프로젝트 환경 변수에도 동일하게 추가)
+
+## 기능 (Phase 2)
+- `/` 랜딩: 철학 3가지 소개, 시작하기 버튼
+- `/chat`: Gemini API 연동 실시간 대화 (대화 저장 없음)
+- `/api/chat`: 시스템 프롬프트 기반 Gemini 호출
+
+## 철학 키워드
+비움 · 판단 없는 경청 · 마음의 성장
+
+개인정보/대화 내용은 서버에 저장하지 않습니다.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
