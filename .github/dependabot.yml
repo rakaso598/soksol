@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    allow:
+      - dependency-type: "all"
+    # security-updates can be enabled so Dependabot opens PRs for vulnerabilities
+    # Note: GitHub will also surface Dependabot alerts in the repo Security tab.
+    #optionally you can set "ignore" rules here if desired.
