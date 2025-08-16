@@ -237,3 +237,17 @@ chmod +x scripts/generate-icons.sh
 
 - CI runs security checks (gitleaks secret scan, npm audit) and tests via `.github/workflows/ci-security.yml`.
 - See `docs/SECURITY-CHECKLIST.md` for recommended actions and runbook.
+
+## Docker
+
+Build and run locally:
+
+- Build image: docker build -t soksol:latest .
+- Run: docker run -p 3000:3000 --env-file .env.local --name soksol-app soksol:latest
+
+Or with docker-compose:
+- docker-compose up --build
+
+Notes:
+- For production in a real deploy, set NODE_ENV=production and provide required secrets via environment variables or secret manager.
+- The Dockerfile runs the Next.js production server (npm start).
