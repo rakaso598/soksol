@@ -196,5 +196,28 @@ chmod +x scripts/generate-icons.sh
 - PII/채팅 내용 제거: beforeSend/ beforeBreadcrumb 에서 body 삭제 및 URL path만 유지
 - 환경 변수: `SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN` (예: .env.local) – 현재 비어있으면 비활성
 
+## 22. 추가 보안 / 안정화 정리
+현재 적용됨:
+- CSP(Content-Security-Policy) 헤더 (self 제한, 외부 최소 허용)
+- HSTS (Strict-Transport-Security 2년 + preload)
+- X-Frame-Options DENY (클릭재킹 방지)
+- Referrer-Policy strict-origin-when-cross-origin
+- X-Content-Type-Options nosniff
+- Permissions-Policy 최소화(camera/mic/geolocation 비활성)
+- PWA service worker: API(NetworkOnly) / 정적 자산 캐시 분리
+- In-memory rate limit + 소프트 지연(jitter)
+- Gemini 호출 타임아웃 및 오류 범주화
+- Sentry 설정 (DSN 없으면 비활성, body 제거)
+- 사용자 입력 저장/캐시 금지 정책 반영
+
+추가 고려 가능(선택):
+- nonce 기반 CSP script-src 강화 (빌드 시 헤더 삽입 로직 확장 필요)
+- Helmet 대체: Next headers()로 이미 대부분 커버 → 유지보수 단일화 위해 추가 패키지 미사용
+- API abuse 추가 보호: user-agent 패턴/빈도 필터 (저장 없는 메모리 룰)
+- Gemini 호출 재시도(backoff) 로직 (idempotent 안전 범위 내)
+- 모바일 WebView SSL pinning (추후 필요 시 네이티브 코드 추가)
+
+위 사항은 현재 서비스 철학(비저장, 최소 데이터)에 부합하도록 외부 저장 불필요 구성.
+
 ---
 (문서 자동 생성: Phase 3 진행 중 상태 요약)
