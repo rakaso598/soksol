@@ -79,7 +79,7 @@ next-env.d.ts
 # ignore any keystore files (already covered but keep explicit)
 **/*.keystore
 
-# ignore SWC build cache/artifacts
+# Build artifact from SWC/JS toolchain
 .swc/
 
 # end mobile ignores
