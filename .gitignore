@@ -82,4 +82,10 @@ next-env.d.ts
 # Build artifact from SWC/JS toolchain
 .swc/
 
+# secret-scan reports
+detect-secrets-results.txt
+snyk-report.json
+gitleaks-report.json
+# end added
+
 # end mobile ignores
