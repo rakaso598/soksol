@@ -14,7 +14,7 @@ describe('validateMessages', () => {
     expect(r.ok).toBe(false);
   });
   test('rejects too many messages', () => {
-    const arr = Array.from({ length: 31 }, (_, i) => ({ role: 'user', content: 'a'+i }));
+    const arr = Array.from({ length: 31 }, (_, i) => ({ role: 'user', content: 'a' + i }));
     const r = validateMessages(arr as any);
     expect(r.ok).toBe(false);
   });
