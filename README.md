@@ -1,63 +1,131 @@
 # SokSol (속솔)
 
-익명 AI 멘탈 케어 웹 서비스.
+익명 AI 멘탈 케어 웹/모바일 프로젝트
 
-## 개발 실행
+## 0. 프로젝트 개요
+- 목표: 사용자의 마음 고민을 익명으로 털어놓고 비워내며 스스로 정리하도록 돕는 AI 동반자
+- 철학: 비움(저장 안 함) · 판단 없는 경청 · 마음의 성장
+- 비저장 정책: 서버 / 클라이언트에 대화 로그 영구 저장 없음 (임시 메모리 렌더링만)
+
+## 1. 모노레포 구조
+```
+./
+  src/app/              # Next.js (웹)
+  mobile/soksol_mobile/  # 실제 React Native 프로젝트 (WebView 패키징)
+  soksol_mobile/         # (LEGACY) 초기 실험용 RN WebView – 사용 안 함, 삭제 예정
+  public/                # 웹 정적 자산
+  .env.local.example     # 환경 변수 예시
+  README.md              # (현재 문서)
+```
+
+## 2. 기술 스택 & 버전
+웹(Next.js)
+- Next.js: 15.4.6 (App Router)
+- React: 19.1.0
+- TypeScript: ^5
+- Tailwind CSS v4 (inline @import 방식)
+- Gemini Client: @google/generative-ai
+- 실행: Turbopack dev 서버
+
+모바일(React Native)
+- React Native: 0.81.0
+- React: 19.1.0
+- WebView: react-native-webview ^13.15.0
+- CLI: @react-native-community/cli 20.0.0
+- TypeScript: ^5.8.x (템플릿)
+
+## 3. 환경 변수
+`.env.local`
+```
+GEMINI_API_KEY=YOUR_KEY
+```
+Vercel 배포 시 동일 키 추가.
+
+## 4. 구현 단계 진행 상황
+| 단계 | 내용 | 상태 |
+|------|------|------|
+| 1차 | 랜딩 / 챗 UI 기본 / 더미 API | 완료 |
+| 2차 | Gemini 연동, 로딩, 시스템 프롬프트 | 완료 |
+| 3차 | RN 프로젝트 생성, WebView 포장, 세로 고정 | 진행 중 (기본 구조 완료) |
+| 3차-남음 | 아이콘/스플래시, 서명, 릴리스 빌드, 스토어 자료 준비 | TODO |
+
+## 5. 시스템 프롬프트 (요약)
+```
+- 판단/비난/진단 대신 공감 & 감정 반영 & 개방형 질문
+- 개인정보 저장/수집하지 않음 상기
+- 위험 징후 시 전문 도움 권유
+- 3~6문장 따뜻하고 명료
+```
+
+## 6. 주요 파일 설명
+- `src/app/api/chat/route.ts`: Gemini `gemini-pro` 모델 호출. 마지막 user 메시지와 시스템 프롬프트 결합.
+- `src/app/chat/page.tsx`: 클라이언트 컴포넌트. 메시지 상태, 로딩 토글, fetch POST.
+- `soksol_mobile/App.tsx`: 배포된 웹 URL(WebView) 로드 + ActivityIndicator.
+
+## 7. 품질 / 보안 주안점
+- 대화 저장 금지: 서버에서 DB/파일 I/O 없음.
+- 에러 시 민감 텍스트 로그 최소화 (현재 console.error 사용 – 운영 배포 시 Sentry 등 적용 시 PII 필터 필요)
+- 모델 호출 실패 시 일반적 오류 메시지 반환.
+
+## 8. 향후 작업(우선순위 순)
+1. (모바일) 아이콘 / adaptive icon 제작 및 리소스 교체
+2. Splash Screen (선택) – 브랜드 컬러 그라데이션 or 흰 배경 로고
+3. Gradle signing 설정 + .gitignore 키 제외
+4. Release 빌드 테스트 (real device)
+5. 웹 성능/메타: Open Graph 이미지 추가, PWA 옵션 검토(오프라인 필요성 낮음)
+6. 안전 가이드 문구 추가 (위기 상황 도움 안내 footer or 첫 응답)
+7. Gemini 응답 토큰/비용 모니터링 방안 문서화
+8. 간단 사용자 피드백 컴포넌트 (비저장 단발성, 선택적)
+
+## 9. 배포
+- 웹: Vercel (현재 수동 설정 필요) → Production URL 확정 후 RN `WEB_URL` 치환
+- 모바일: AAB 생성 → Play Console 업로드 → 콘텐츠 등급 설문, 개인정보 처리(수집 없음), 카테고리(Health & Fitness - Mental Wellness?)
+
+## 10. 개발 실행 요약
+웹:
 ```bash
 npm install
 npm run dev
 ```
-
-## 환경 변수
-루트에 `.env.local` 파일 생성 후 아래 키 설정:
-```
-GEMINI_API_KEY=YOUR_KEY_HERE
-```
-(배포 시 Vercel 프로젝트 환경 변수에도 동일하게 추가)
-
-## 기능 (Phase 2)
-- `/` 랜딩: 철학 3가지 소개, 시작하기 버튼
-- `/chat`: Gemini API 연동 실시간 대화 (대화 저장 없음)
-- `/api/chat`: 시스템 프롬프트 기반 Gemini 호출
-
-## 철학 키워드
-비움 · 판단 없는 경청 · 마음의 성장
-
-개인정보/대화 내용은 서버에 저장하지 않습니다.
-
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
+모바일(Android):
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd soksol_mobile
+npm install
+npx react-native run-android
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 11. 참고 체크리스트 (Play Store)
+- 패키지명: com.soksol.app
+- 앱명: 속솔
+- 최소 설명 키워드: 익명, 비저장, AI 경청, 마음 정리
+- 민감성 고지: 의료진 대체 아님, 위기 시 긴급 도움 안내
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 12. 라이선스 & 저작권
+© {YEAR} SokSol. All rights reserved.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 13. 테스트 (최소 검증)
+웹(Next.js)
+- Jest 환경 구성 (`jest.config.js`, `jest.setup.js`).
+- `.env.test` 파일을 통해 `GEMINI_API_KEY` 로딩 여부를 검사하는 단일 테스트 (`__tests__/env.test.ts`).
+- 목적: 배포 전 환경 변수 누락으로 인한 런타임 오류 조기 감지.
 
-## Learn More
+작성/실행 예시:
+```bash
+# .env.test 생성 (CI 용)
+echo "GEMINI_API_KEY=dummy" > .env.test
+npm run test
+```
 
-To learn more about Next.js, take a look at the following resources:
+모바일(React Native)
+- 기본 템플릿 렌더링 테스트(`mobile/soksol_mobile/__tests__/App.test.tsx`) 유지.
+- WebView 래퍼(`soksol_mobile/App.tsx`)는 현재 간단하여 별도 스냅샷 불필요 (필요 시 추후 추가).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+확장 아이디어(추가 미구현):
+- 챗 API route 모킹 후 응답 포맷 검증.
+- 시스템 프롬프트 규칙 위반 여부 간단 정적 검사.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+추가 주석:
+- `soksol_mobile/` 폴더는 TypeScript `exclude` 처리됨. 실제 모바일 변경은 `mobile/soksol_mobile/` 만 사용.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+(문서 자동 생성: Phase 3 진행 중 상태 요약)
