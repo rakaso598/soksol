@@ -62,7 +62,9 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-200px)] max-w-2xl mx-auto w-full p-4">
+    // Let the parent layout manage vertical sizing. Use flex-1 so this page fills available space
+    // and the messages area can scroll only if content overflows.
+    <div className="flex flex-col flex-1 max-w-2xl mx-auto w-full p-4">
       {showCrisis && (
         <div className="mb-3 text-[11px] leading-relaxed px-3 py-2 flex items-start gap-2 crisis-box">
           <span className="font-semibold">위기 안내:</span>
@@ -70,7 +72,7 @@ export default function ChatPage() {
           <button onClick={() => setShowCrisis(false)} className="ml-2 text-[#10B981] hover:text-[#0ea56f] text-xs font-medium">닫기</button>
         </div>
       )}
-      <div className="flex-1 overflow-y-auto space-y-5 p-5 chat-surface max-h-[60vh]" aria-live="polite" aria-label="채팅 메시지">
+      <div className="flex-1 overflow-y-auto space-y-5 p-5 chat-surface" aria-live="polite" aria-label="채팅 메시지">
         {messages.length === 0 && !loading && (
           <p className="text-center text-sm text-[#7a6f6e] mt-10">마음속에 있는 생각을 편하게 적어보세요.</p>
         )}
