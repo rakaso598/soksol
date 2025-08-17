@@ -196,3 +196,12 @@ html, body {
   }
   .site-footer p { margin: 6px 0; line-height: 1.35; font-size: 12px; }
 }
+
+/* Footer compact/full toggle */
+.footer-compact { display: none; }
+.footer-full { display: block; }
+
+@media (max-width: 520px) {
+  .footer-compact { display: block; font-size: 13px; text-align: center; margin: 6px 0; }
+  .footer-full { display: none; }
+}

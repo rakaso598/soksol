@@ -67,12 +67,19 @@ export default function RootLayout({
 
         <div className="flex-1 flex flex-col">{children}</div>
         <footer className="site-footer text-center text-xs text-[var(--foreground-soft)] py-6 border-t border-[var(--color-border-soft)] mt-12 bg-[rgba(16,185,129,0.08)] backdrop-blur-sm space-y-2">
-          <p className="mb-1">
-            이 서비스는 사용자의 대화 내용을 저장하지 않습니다. (개인정보 처리방침: 수집 대상 없음)
-          </p>
-          <p className="text-[11px] leading-relaxed opacity-80">
-            위기(자해·타해 우려, 즉각적 위험) 상황이라면 112, 1393(자살 예방 상담), 1588-9191(정신건강 상담) 등 긴급/전문 기관에 즉시 도움을 요청하세요. 본 서비스는 의료 진단이나 치료가 아닙니다.
-          </p>
+          {/* Full footer (desktop/tablet) */}
+          <div className="footer-full">
+            <p className="mb-1">
+              이 서비스는 사용자의 대화 내용을 저장하지 않습니다. (개인정보 처리방침: 수집 대상 없음)
+            </p>
+            <p className="text-[11px] leading-relaxed opacity-80">
+              위기(자해·타해 우려, 즉각적 위험) 상황이라면 112, 1393(자살 예방 상담), 1588-9191(정신건강 상담) 등 긴급/전문 기관에 즉시 도움을 요청하세요. 본 서비스는 의료 진단이나 치료가 아닙니다.
+            </p>
+          </div>
+
+          {/* Compact footer (mobile-only) */}
+          <p className="footer-compact opacity-80">대화는 저장되지 않습니다. 긴급 상황 시 112/1393로 연락하세요.</p>
+
           <p className="opacity-70">© {new Date().getFullYear()} SokSol. All rights reserved.</p>
         </footer>
       </body>
