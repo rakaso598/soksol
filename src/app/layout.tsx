@@ -57,8 +57,9 @@ export default function RootLayout({
         <header className="w-full border-b border-[var(--color-border-soft)] bg-transparent">
           <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
-              <Image src="/logo.svg" alt="속솔 로고" width={28} height={28} className="w-7 h-7" />
-              <span className="text-[#10B981] font-semibold text-lg leading-none">속솔</span>
+              {/* Increased logo size for visibility and better balance with text */}
+              <Image src="/logo.svg" alt="속솔 로고" width={40} height={40} className="w-10 h-10" />
+              <span className="text-[#10B981] font-semibold text-xl leading-none">속솔</span>
             </Link>
             <div className="text-xs text-[var(--foreground-soft)]">대화는 저장되지 않습니다</div>
           </div>

@@ -1,6 +1,5 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
 
 interface ChatMessage {
   id: string;
@@ -59,13 +58,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-160px)] max-w-3xl mx-auto w-full p-4">
-      <header className="flex items-center justify-between py-2 mb-2">
-        <Link href="/" className="font-semibold text-lg text-[#10B981]">
-          속솔
-        </Link>
-        <span className="text-xs text-[#7a6f6e]">대화는 저장되지 않습니다</span>
-      </header>
+    <div className="flex flex-col min-h-[calc(100vh-200px)] max-w-2xl mx-auto w-full p-4">
       {showCrisis && (
         <div className="mb-3 text-[11px] leading-relaxed px-3 py-2 flex items-start gap-2 crisis-box">
           <span className="font-semibold">위기 안내:</span>
@@ -73,7 +66,7 @@ export default function ChatPage() {
           <button onClick={() => setShowCrisis(false)} className="ml-2 text-[#10B981] hover:text-[#0ea56f] text-xs font-medium">닫기</button>
         </div>
       )}
-      <div className="flex-1 overflow-y-auto space-y-5 p-5 chat-surface" aria-live="polite" aria-label="채팅 메시지">
+      <div className="flex-1 overflow-y-auto space-y-5 p-5 chat-surface max-h-[60vh]" aria-live="polite" aria-label="채팅 메시지">
         {messages.length === 0 && !loading && (
           <p className="text-center text-sm text-[#7a6f6e] mt-10">마음속에 있는 생각을 편하게 적어보세요.</p>
         )}
