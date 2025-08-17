@@ -53,7 +53,7 @@ export default function RootLayout({
       >
         {/* Global Header could be inserted here if needed */}
         <div className="flex-1 flex flex-col">{children}</div>
-        <footer className="text-center text-xs text-[var(--foreground-soft)] py-6 border-t mt-12 bg-[rgba(16,185,129,0.08)] backdrop-blur-sm space-y-2">
+        <footer className="text-center text-xs text-[var(--foreground-soft)] py-6 mt-12 bg-[rgba(16,185,129,0.08)] backdrop-blur-sm space-y-2">
           <p className="mb-1">
             이 서비스는 사용자의 대화 내용을 저장하지 않습니다. (개인정보 처리방침: 수집 대상 없음)
           </p>
