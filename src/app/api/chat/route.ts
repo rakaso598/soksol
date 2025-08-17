@@ -84,25 +84,42 @@ const DISALLOWED_UA_PATTERNS = [/python-requests/i, /curl\/\d+/i, /wget/i];
 function extractTextFromResponse(resp: unknown): string {
   // Handle several possible SDK response shapes
   try {
-    const anyResp = resp as any;
+    const anyResp = resp as Record<string, unknown>;
     // Common: { text: '...' }
-    if (typeof anyResp?.text === 'string' && anyResp.text.trim()) return anyResp.text.trim();
+    const maybeText = anyResp['text'];
+    if (typeof maybeText === 'string' && maybeText.trim()) return maybeText.trim();
+
     // Common genai: { candidates: [{ content: { text: '...' } }] }
-    if (Array.isArray(anyResp?.candidates) && anyResp.candidates.length) {
-      const c = anyResp.candidates[0];
-      if (typeof c?.content?.text === 'string' && c.content.text.trim()) return c.content.text.trim();
-      if (typeof c?.text === 'string' && c.text.trim()) return c.text.trim();
-      if (typeof c?.message?.content?.text === 'string' && c.message.content.text.trim()) return c.message.content.text.trim();
+    const candidates = anyResp['candidates'];
+    if (Array.isArray(candidates) && candidates.length) {
+      const c0 = candidates[0] as Record<string, unknown> | undefined;
+      const content = c0?.['content'] as Record<string, unknown> | undefined;
+      const cText = content?.['text'];
+      if (typeof cText === 'string' && cText.trim()) return cText.trim();
+      const cText2 = c0?.['text'];
+      if (typeof cText2 === 'string' && cText2.trim()) return cText2.trim();
+      const msg = c0?.['message'] as Record<string, unknown> | undefined;
+      const msgText = msg?.['content'] as Record<string, unknown> | undefined;
+      const mt = msgText?.['text'];
+      if (typeof mt === 'string' && mt.trim()) return mt.trim();
     }
+
     // Newer shape: { output: [{ content: [{ text: '...' }] }] }
-    if (Array.isArray(anyResp?.output) && anyResp.output.length) {
-      const out = anyResp.output[0];
-      if (Array.isArray(out?.content) && out.content.length && typeof out.content[0]?.text === 'string') return out.content[0].text;
+    const output = anyResp['output'];
+    if (Array.isArray(output) && output.length) {
+      const out0 = output[0] as Record<string, unknown> | undefined;
+      const outContent = out0?.['content'];
+      if (Array.isArray(outContent) && outContent.length) {
+        const t = outContent[0] as Record<string, unknown> | undefined;
+        const ttext = t?.['text'];
+        if (typeof ttext === 'string') return ttext;
+      }
     }
+
     // Fallback to stringifying limited size
     const s = JSON.stringify(anyResp);
     return s.length > 1000 ? s.substring(0, 1000) + '...' : s;
-  } catch (e) {
+  } catch {
     return '';
   }
 }
@@ -118,13 +135,15 @@ async function callGeminiWithRetry(prompt: string, attempts = 0): Promise<string
   const timeout = setTimeout(() => controller.abort(), 20000);
   try {
     // The SDK may accept different param shapes; pass a minimal well-formed request.
-    const payload: any = { model: modelName };
+    const payload: Record<string, unknown> = { model: modelName };
     // newer SDKs accept contents or input; include 'content' for backwards compat
-    payload.contents = [{ type: 'text', text: prompt }];
-    const response = await client.models.generateContent(payload as any, { signal: controller.signal as any }).catch(async (e: unknown) => {
+    payload['contents'] = [{ type: 'text', text: prompt }];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const response = await client.models.generateContent(payload as unknown as any).catch(async () => {
       // Some SDK versions expect { input: '...' } or { prompt: '...' }
-      const altPayload = { model: modelName, input: prompt };
-      return client.models.generateContent(altPayload as any, { signal: controller.signal as any });
+      const altPayload: Record<string, unknown> = { model: modelName, input: prompt };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return client.models.generateContent(altPayload as unknown as any);
     });
 
     clearTimeout(timeout);
