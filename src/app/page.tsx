@@ -1,11 +1,14 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   return (
     <main className="flex flex-col items-center justify-center px-6 py-16 max-w-4xl mx-auto w-full">
       <section className="text-center mb-14">
-        <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-[#34D399] via-[#86EFAC] to-[#CFFBE6] text-transparent bg-clip-text mb-6">
-          속솔
+        <h1 className="mb-6">
+          {/* Use SVG logo instead of text for the main hero; keep hidden text for accessibility/SEO */}
+          <Image src="/logo.svg" alt="속솔 로고" width={144} height={144} className="mx-auto w-36 h-auto sm:w-44" priority />
+          <span className="sr-only">속솔</span>
         </h1>
         <p className="text-lg sm:text-xl leading-relaxed text-neutral-700 max-w-2xl mx-auto">
           당신이 누구인지 아무도 모르는 곳에서, 가장 솔직한 당신을 만나보세요. <br />
