@@ -85,12 +85,12 @@ async function callGeminiWithRetry(prompt: string, attempts = 0): Promise<string
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 15000);
   try {
-    const result = await model.generateContent(prompt, { signal: controller.signal as any });
+    const result = await model.generateContent(prompt, { signal: controller.signal as unknown as AbortSignal });
     clearTimeout(timeout);
     return result.response.text();
-  } catch (err: any) {
+  } catch (err: unknown) {
     clearTimeout(timeout);
-    const raw = (err?.message || '').toLowerCase();
+    const raw = asMessage(err).toLowerCase();
     const transient = raw.includes('timeout') || raw.includes('429') || raw.includes('quota') || raw.includes('exceed') || raw.includes('tempor');
     if (transient && attempts < 2) {
       await sleep(300 * (attempts + 1) + Math.random() * 400);
@@ -102,7 +102,8 @@ async function callGeminiWithRetry(prompt: string, attempts = 0): Promise<string
 
 export async function POST(req: Request) {
   try {
-    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || (req as any).ip || "anon";
+    const forwarded = req.headers.get("x-forwarded-for");
+    const ip = forwarded?.split(",")[0]?.trim() || "anon";
     const ua = req.headers.get('user-agent') || '';
     if (DISALLOWED_UA_PATTERNS.some(r => r.test(ua))) {
       return NextResponse.json({ errorCode: 'BLOCKED_UA', message: '허용되지 않는 클라이언트.' }, { status: 400 });
@@ -113,11 +114,13 @@ export async function POST(req: Request) {
     }
     if (rl.delay) await sleep(rl.delay);
 
-    const body = await req.json().catch(() => ({} as any));
+    const body = await req.json().catch(() => ({} as Record<string, unknown>));
     const { messages } = body as { messages?: { role: string; content: string }[] };
-    const validation = validateMessages(messages);
+
+    type ValidationResult = { ok: boolean; reason?: string };
+    const validation = validateMessages(messages) as ValidationResult;
     if (!validation.ok) {
-      const mapped = mapValidation((validation as any).reason);
+      const mapped = mapValidation(validation.reason || '');
       return NextResponse.json({ errorCode: mapped.code, message: mapped.message }, { status: mapped.status });
     }
 
