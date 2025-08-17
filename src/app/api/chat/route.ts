@@ -9,7 +9,7 @@ export const SYSTEM_PROMPT = `당신은 사용자의 고민을 판단 없이 경
 - 답변은 3~6문장 내로 따뜻하고 명료하게 유지합니다.`;
 
 let genAI: GoogleGenerativeAI | null = null;
-export function getClient() {
+function getClient() {
   if (!genAI) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) throw new Error("GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.");
