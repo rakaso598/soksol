@@ -98,4 +98,8 @@ git-history-scan.txt
 git_grep_history_report.txt
 # end added
 
+# Ignore build-generated service worker
+/public/sw.js
+# end added
+
 # end mobile ignores
