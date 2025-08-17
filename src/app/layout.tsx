@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Image from "next/image";
 import Link from "next/link";
 
 const geistSans = Geist({
@@ -55,7 +56,10 @@ export default function RootLayout({
         {/* Global Header: always-visible brand logo (solid color for SSR/CSR stability) */}
         <header className="w-full border-b border-[var(--color-border-soft)] bg-transparent">
           <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <Link href="/" className="text-[#10B981] font-semibold text-lg leading-none">속솔</Link>
+            <Link href="/" className="flex items-center gap-3">
+              <Image src="/logo.svg" alt="속솔 로고" width={28} height={28} className="w-7 h-7" />
+              <span className="text-[#10B981] font-semibold text-lg leading-none">속솔</span>
+            </Link>
             <div className="text-xs text-[var(--foreground-soft)]">대화는 저장되지 않습니다</div>
           </div>
         </header>
