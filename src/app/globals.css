@@ -1,46 +1,46 @@
 @import "tailwindcss";
 
 :root {
-  /* Brighter, softer pastel background and clearer foreground */
-  --background: #FFF7F3; /* brighter warm cream */
-  --foreground: #2b2b2b; /* clearer dark text for inputs and content */
-  --foreground-soft: #4a423f;
+  /* Sky-blue pastel theme */
+  --background: #F4FBFF; /* very light sky */
+  --foreground: #16313a; /* deep teal for readable text */
+  --foreground-soft: #2b4f57;
   --color-surface: #FFFFFF;
-  --color-surface-soft: #FFF1E9;
-  --color-surface-alt: #FFF8F2;
-  --color-border-soft: #F6E8E0;
-  --color-accent-from: #fca6b1; /* warm rose */
-  --color-accent-to: #fbc788;   /* soft amber */
-  --color-accent-strong-from: #fb7185;
-  --color-accent-strong-to: #f59e0b;
-  --color-accent-tint: #fff0ee;
+  --color-surface-soft: #F0FBFF; /* soft icy blue */
+  --color-surface-alt: #F7FEFF;
+  --color-border-soft: #E3F6FB;
+  --color-accent-from: #9ED8FF; /* light sky */
+  --color-accent-to: #79C6F9;   /* soft blue */
+  --color-accent-strong-from: #4DA8FF; /* stronger sky */
+  --color-accent-strong-to: #2DB7C7;   /* aqua-teal */
+  --color-accent-tint: #eaf9ff;
   --color-error-bg: #FFECEC;
   --color-error-text: #B03030;
-  --color-crisis-bg: #FFF5F1;
+  --color-crisis-bg: #FFF7F5;
   --color-crisis-text: #C55240;
-  --color-muted-text: #7d6f6b;
+  --color-muted-text: #6e7b80;
   --radius-bubble: 1.25rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #161517;
-    --foreground: #e9e6e4;
-    --foreground-soft: #d0c9c7;
-    --color-surface: #26262B;
-    --color-surface-soft: #2E2E34;
-    --color-surface-alt: #302f35;
-    --color-border-soft: #3A3A42;
-    --color-accent-from: #fb7185;
-    --color-accent-to: #fbbf77;
-    --color-accent-strong-from: #f43f5e;
-    --color-accent-strong-to: #f59e0b;
-    --color-accent-tint: #422e31;
+    --background: #07181c;
+    --foreground: #e6f6fb;
+    --foreground-soft: #cbeaf0;
+    --color-surface: #0f1720;
+    --color-surface-soft: #122026;
+    --color-surface-alt: #0f1b20;
+    --color-border-soft: #16333a;
+    --color-accent-from: #3b82f6;
+    --color-accent-to: #06b6d4;
+    --color-accent-strong-from: #60a5fa;
+    --color-accent-strong-to: #2dd4bf;
+    --color-accent-tint: #072930;
     --color-error-bg: #3B1E1E;
     --color-error-text: #FCA5A5;
     --color-crisis-bg: #402726;
     --color-crisis-text: #fda4af;
-    --color-muted-text: #A0A2AC;
+    --color-muted-text: #8ea6ab;
   }
 }
 
@@ -51,59 +51,53 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* New helper text utilities */
+/* text utilities */
 .text-foreground { color: var(--foreground) !important; }
 .text-foreground-soft { color: var(--foreground-soft) !important; }
 .text-muted { color: var(--color-muted-text) !important; }
 
-/* New layered pastel background (brighter) */
+/* Bright layered sky pastel background (simplified to single color to avoid overlay/filter effect) */
 .app-bg {
-  background:
-    radial-gradient(circle at 18% 22%, rgba(255,227,233,0.7) 0%, transparent 60%),
-    radial-gradient(circle at 82% 28%, rgba(255,239,218,0.7) 0%, transparent 55%),
-    radial-gradient(circle at 50% 85%, rgba(255,245,230,0.7) 0%, transparent 60%),
-    linear-gradient(180deg, #fffaf8 0%, #fff6f1 45%, #fff2ea 100%);
-  background-attachment: fixed;
+  background: var(--background);
+  background-image: none;
+  background-attachment: scroll;
 }
 @media (prefers-color-scheme: dark) {
   .app-bg {
-    background:
-      radial-gradient(circle at 15% 20%, #43252a 0%, transparent 55%),
-      radial-gradient(circle at 85% 25%, #453322 0%, transparent 55%),
-      radial-gradient(circle at 50% 85%, #362c2b 0%, transparent 60%),
-      linear-gradient(180deg, #1f1f23 0%, #1d1d22 60%, #1b1b20 100%);
+    background: var(--background);
+    background-image: none;
   }
 }
 
-/* Utility classes (plain CSS equivalents) */
+/* chat surface: lighter, minimal shadow to avoid darkened overlay */
 .chat-surface {
-  background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(255,250,246,0.95));
-  -webkit-backdrop-filter: blur(8px) saturate(115%);
-  backdrop-filter: blur(8px) saturate(115%);
+  background: var(--color-surface) !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   border: 1px solid var(--color-border-soft);
-  box-shadow: 0 6px 22px -10px rgba(255,132,103,0.18), 0 1px 2px rgba(0,0,0,0.04);
-  border-radius: 1.25rem;
-  transition: background 0.3s ease;
+  box-shadow: 0 2px 8px rgba(30,60,70,0.06);
+  border-radius: 1rem;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
   color: var(--foreground);
 }
 .chat-bubble-user {
   background: linear-gradient(135deg,var(--color-accent-from),var(--color-accent-to));
-  color:#fff;
+  color:#06202a; /* dark text on light blue accent for readability */
   border-radius: var(--radius-bubble);
-  box-shadow: 0 3px 8px -2px rgba(255,124,92,0.36);
+  box-shadow: 0 4px 14px -6px rgba(77,168,255,0.28);
 }
 .chat-bubble-bot {
   background: var(--color-surface-alt);
-  color: var(--foreground) !important;
+  color: var(--foreground);
   border-radius: var(--radius-bubble);
-  box-shadow: inset 0 0 0 1px var(--color-border-soft), 0 1px 2px rgba(0,0,0,0.04);
+  box-shadow: inset 0 0 0 1px var(--color-border-soft), 0 1px 2px rgba(0,0,0,0.03);
 }
 .chat-bubble-error {
   background: var(--color-error-bg);
   color: var(--color-error-text);
-  border: 1px solid #FFB8B8;
+  border: 1px solid #ffd1d1;
   border-radius: var(--radius-bubble);
-  box-shadow: 0 0 0 1px #ffc3c3 inset;
+  box-shadow: 0 0 0 1px #ffd7d7 inset;
 }
 .chat-bubble-loading {
   background: var(--color-surface-soft);
@@ -111,24 +105,24 @@ body {
   border-radius: var(--radius-bubble);
 }
 .crisis-box {
-  background: linear-gradient(135deg,var(--color-crisis-bg),#fff0e9);
+  background: linear-gradient(135deg, rgba(255,247,244,0.95), #fff6f4);
   color: var(--color-crisis-text);
   border: 1px solid var(--color-border-soft);
   border-radius: 0.75rem;
 }
 
-/* Input focus / contrast improvements */
+/* Input contrast and styles */
 textarea.chat-input {
-  background: var(--color-surface-alt) !important;
+  background: var(--color-surface) !important;
   color: var(--foreground) !important;
   caret-color: var(--foreground) !important;
   border: 1px solid var(--color-border-soft);
-  transition: box-shadow 0.15s, border-color 0.15s, background 0.3s;
+  transition: box-shadow 0.15s, border-color 0.15s, background 0.2s;
 }
 textarea.chat-input::placeholder { color: var(--color-muted-text); opacity: 1; }
 textarea.chat-input:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(251,113,133,0.18), 0 2px 6px -2px rgba(255,132,103,0.32);
+  box-shadow: 0 0 0 4px rgba(45,183,199,0.12), 0 3px 8px -4px rgba(45,183,199,0.12);
   border-color: var(--color-accent-from);
   background: #fff;
 }
@@ -136,19 +130,13 @@ button.chat-send {
   background: linear-gradient(135deg,var(--color-accent-strong-from),var(--color-accent-strong-to));
   color: #fff;
   font-weight: 600;
-  box-shadow: 0 4px 10px -3px rgba(251,113,133,0.45), 0 2px 4px rgba(0,0,0,0.06);
+  box-shadow: 0 6px 18px -8px rgba(77,168,255,0.32), 0 2px 6px rgba(0,0,0,0.06);
 }
 button.chat-send:hover:not(:disabled) {
-  opacity: 0.95;
-  box-shadow: 0 6px 16px -5px rgba(251,113,133,0.5);
+  opacity: 0.98;
+  transform: translateY(-1px);
 }
-button.chat-send:disabled {
-  opacity: 0.45;
-}
-button.chat-send:focus-visible {
-  outline: 2px solid rgba(251,113,133,0.45);
-  outline-offset: 3px;
-}
+button.chat-send:disabled { opacity: 0.5; }
+button.chat-send:focus-visible { outline: 2px solid rgba(45,183,199,0.18); outline-offset: 3px; }
 
-/* small utility to ensure readable inline text on light backgrounds */
 .readable { color: var(--foreground) !important; }
