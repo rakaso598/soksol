@@ -1,26 +1,163 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Sky-blue pastel theme */
+  --background: #F4FBFF; /* very light sky */
+  --foreground: #16313a; /* deep teal for readable text */
+  --foreground-soft: #2b4f57;
+  --color-surface: #FFFFFF;
+  --color-surface-soft: #F0FBFF; /* soft icy blue */
+  --color-surface-alt: #F7FEFF;
+  --color-border-soft: #E3F6FB;
+  --color-accent-from: #9ED8FF; /* light sky */
+  --color-accent-to: #79C6F9;   /* soft blue */
+  --color-accent-strong-from: #4DA8FF; /* stronger sky */
+  --color-accent-strong-to: #2DB7C7;   /* aqua-teal */
+  --color-accent-tint: #eaf9ff;
+  --color-error-bg: #FFECEC;
+  --color-error-text: #B03030;
+  --color-crisis-bg: #FFF7F5;
+  --color-crisis-text: #C55240;
+  --color-muted-text: #6e7b80;
+  --radius-bubble: 1.25rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #07181c;
+    --foreground: #e6f6fb;
+    --foreground-soft: #cbeaf0;
+    --color-surface: #0f1720;
+    --color-surface-soft: #122026;
+    --color-surface-alt: #0f1b20;
+    --color-border-soft: #16333a;
+    --color-accent-from: #3b82f6;
+    --color-accent-to: #06b6d4;
+    --color-accent-strong-from: #60a5fa;
+    --color-accent-strong-to: #2dd4bf;
+    --color-accent-tint: #072930;
+    --color-error-bg: #3B1E1E;
+    --color-error-text: #FCA5A5;
+    --color-crisis-bg: #402726;
+    --color-crisis-text: #fda4af;
+    --color-muted-text: #8ea6ab;
   }
+}
+
+/* Force light theme utility: applying this class to <body> will override dark-mode variables */
+.force-light {
+  --background: #F4FBFF; /* very light sky */
+  --foreground: #16313a; /* deep teal for readable text */
+  --foreground-soft: #2b4f57;
+  --color-surface: #FFFFFF;
+  --color-surface-soft: #F0FBFF;
+  --color-surface-alt: #F7FEFF;
+  --color-border-soft: #E3F6FB;
+  --color-accent-from: #9ED8FF;
+  --color-accent-to: #79C6F9;
+  --color-accent-strong-from: #4DA8FF;
+  --color-accent-strong-to: #2DB7C7;
+  --color-accent-tint: #eaf9ff;
+  --color-error-bg: #FFECEC;
+  --color-error-text: #B03030;
+  --color-crisis-bg: #FFF7F5;
+  --color-crisis-text: #C55240;
+  --color-muted-text: #6e7b80;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
+
+/* text utilities */
+.text-foreground { color: var(--foreground) !important; }
+.text-foreground-soft { color: var(--foreground-soft) !important; }
+.text-muted { color: var(--color-muted-text) !important; }
+
+/* Bright layered sky pastel background (simplified to single color to avoid overlay/filter effect) */
+.app-bg {
+  background: var(--background);
+  background-image: none;
+  background-attachment: scroll;
+}
+@media (prefers-color-scheme: dark) {
+  .app-bg {
+    background: var(--background);
+    background-image: none;
+  }
+}
+
+/* chat surface: lighter, minimal shadow to avoid darkened overlay */
+.chat-surface {
+  background: var(--color-surface) !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border: 1px solid var(--color-border-soft);
+  box-shadow: 0 2px 8px rgba(30,60,70,0.06);
+  border-radius: 1rem;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+  color: var(--foreground);
+}
+.chat-bubble-user {
+  background: linear-gradient(135deg,var(--color-accent-from),var(--color-accent-to));
+  color:#06202a; /* dark text on light blue accent for readability */
+  border-radius: var(--radius-bubble);
+  box-shadow: 0 4px 14px -6px rgba(77,168,255,0.28);
+}
+.chat-bubble-bot {
+  background: var(--color-surface-alt);
+  color: var(--foreground);
+  border-radius: var(--radius-bubble);
+  box-shadow: inset 0 0 0 1px var(--color-border-soft), 0 1px 2px rgba(0,0,0,0.03);
+}
+.chat-bubble-error {
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 1px solid #ffd1d1;
+  border-radius: var(--radius-bubble);
+  box-shadow: 0 0 0 1px #ffd7d7 inset;
+}
+.chat-bubble-loading {
+  background: var(--color-surface-soft);
+  color: var(--color-muted-text);
+  border-radius: var(--radius-bubble);
+}
+.crisis-box {
+  background: linear-gradient(135deg, rgba(255,247,244,0.95), #fff6f4);
+  color: var(--color-crisis-text);
+  border: 1px solid var(--color-border-soft);
+  border-radius: 0.75rem;
+}
+
+/* Input contrast and styles */
+textarea.chat-input {
+  background: var(--color-surface) !important;
+  color: var(--foreground) !important;
+  caret-color: var(--foreground) !important;
+  border: 1px solid var(--color-border-soft);
+  transition: box-shadow 0.15s, border-color 0.15s, background 0.2s;
+}
+textarea.chat-input::placeholder { color: var(--color-muted-text); opacity: 1; }
+textarea.chat-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(45,183,199,0.12), 0 3px 8px -4px rgba(45,183,199,0.12);
+  border-color: var(--color-accent-from);
+  background: #fff;
+}
+button.chat-send {
+  background: linear-gradient(135deg,var(--color-accent-strong-from),var(--color-accent-strong-to));
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 6px 18px -8px rgba(77,168,255,0.32), 0 2px 6px rgba(0,0,0,0.06);
+}
+button.chat-send:hover:not(:disabled) {
+  opacity: 0.98;
+  transform: translateY(-1px);
+}
+button.chat-send:disabled { opacity: 0.5; }
+button.chat-send:focus-visible { outline: 2px solid rgba(45,183,199,0.18); outline-offset: 3px; }
+
+.readable { color: var(--foreground) !important; }
