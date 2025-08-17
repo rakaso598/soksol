@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import { validateMessages } from "@/lib/validateMessages";
 
+// NOTE (Privacy): This API stores no chat data server-side (no DB / no file writes).
+// All responses include explicit no-store / no-cache headers to give users a verifiable
+// signal (browser devtools -> Network) that messages are not cached. See PRIVACY.md & README.md.
+// If adding new functionality here, DO NOT introduce persistence.
+
 const SYSTEM_PROMPT = `당신은 사용자의 고민을 판단 없이 경청하고 공감하며 스스로 답을 찾도록 돕는 따뜻한 AI 상담사입니다. 
 - 개인정보를 수집하거나 저장하지 않는다는 점을 상기시킵니다.
 - 판단/비난/진단 대신 감정 반영, 개방형 질문, 자기이해 촉진을 사용합니다.
@@ -17,6 +22,16 @@ function getClient() {
     aiClient = new GoogleGenAI({ apiKey });
   }
   return aiClient;
+}
+
+// Helper: attach strict no-store headers to every outgoing response
+function withNoStoreHeaders(res: NextResponse) {
+  res.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+  res.headers.set('Pragma', 'no-cache');
+  res.headers.set('Expires', '0');
+  // Non-standard informational header to reinforce policy (visible to users):
+  res.headers.set('X-Data-Retention', 'none');
+  return res;
 }
 
 // Rate limiting (simple in-memory sliding window with progressive delay)
@@ -168,11 +183,11 @@ export async function POST(req: Request) {
     const ip = forwarded?.split(",")[0]?.trim() || "anon";
     const ua = req.headers.get('user-agent') || '';
     if (DISALLOWED_UA_PATTERNS.some(r => r.test(ua))) {
-      return NextResponse.json({ errorCode: 'BLOCKED_UA', message: '허용되지 않는 클라이언트.' }, { status: 400 });
+      return withNoStoreHeaders(NextResponse.json({ errorCode: 'BLOCKED_UA', message: '허용되지 않는 클라이언트.' }, { status: 400 }));
     }
     const rl = rateLimitConsume(ip);
     if (!rl.allowed) {
-      return NextResponse.json({ errorCode: 'RATE_LIMIT', message: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.' }, { status: 429 });
+      return withNoStoreHeaders(NextResponse.json({ errorCode: 'RATE_LIMIT', message: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.' }, { status: 429 }));
     }
     if (rl.delay) await sleep(rl.delay);
 
@@ -183,7 +198,7 @@ export async function POST(req: Request) {
     const validation = validateMessages(messages) as ValidationResult;
     if (!validation.ok) {
       const mapped = mapValidation(validation.reason || '');
-      return NextResponse.json({ errorCode: mapped.code, message: mapped.message }, { status: mapped.status });
+      return withNoStoreHeaders(NextResponse.json({ errorCode: mapped.code, message: mapped.message }, { status: mapped.status }));
     }
 
     const userLatest = messages![messages!.length - 1]!.content || "";
@@ -191,15 +206,15 @@ export async function POST(req: Request) {
 
     try {
       const text = await callGeminiWithRetry(prompt);
-      return NextResponse.json({ reply: text });
+      return withNoStoreHeaders(NextResponse.json({ reply: text }));
     } catch (err: unknown) {
       const mapped = classifyError(err);
       safeLogError(err);
-      return NextResponse.json({ errorCode: mapped.code, message: mapped.message }, { status: mapped.status });
+      return withNoStoreHeaders(NextResponse.json({ errorCode: mapped.code, message: mapped.message }, { status: mapped.status }));
     }
   } catch (e: unknown) {
     safeLogError(e);
     const mapped = classifyError(e);
-    return NextResponse.json({ errorCode: mapped.code, message: mapped.message }, { status: mapped.status });
+    return withNoStoreHeaders(NextResponse.json({ errorCode: mapped.code, message: mapped.message }, { status: mapped.status }));
   }
 }

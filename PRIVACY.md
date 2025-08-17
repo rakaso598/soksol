@@ -7,6 +7,10 @@
 - 채팅 메시지 서버측 DB/파일 저장 없음.
 - 로깅 시 메시지 전문 저장/전송 안 함 (Sentry filter).
 
+네트워크 / 헤더 기반 검증
+- /api/chat 모든 응답: `Cache-Control: no-store, no-cache, must-revalidate`, `Pragma: no-cache`, `X-Data-Retention: none` (개발자 도구로 확인 가능)
+- /privacy-check 페이지: 실시간 서버 UTC 타임스탬프 노출 (새로고침마다 변화 → 캐시 미사용 증명)
+
 쿠키 / 로컬 저장소
 - 서비스 기능에 필수적인 영구 저장 사용 안 함.
 - sessionStorage: 위기 안내 1회성 플래그만 저장 (브라우저 세션 종료 시 삭제).

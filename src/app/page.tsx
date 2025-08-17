@@ -17,6 +17,14 @@ export default function Home() {
         >
           시작하기
         </Link>
+        <div className="mt-6 text-sm space-x-4">
+          <Link href="/privacy-check" className="underline text-rose-600 hover:text-rose-700">
+            실시간 비저장 증명
+          </Link>
+          <Link href="/PRIVACY" className="underline text-amber-600 hover:text-amber-700">
+            개인정보 처리방침
+          </Link>
+        </div>
       </section>
 
       <section className="grid gap-8 sm:grid-cols-3 w-full">
