@@ -37,13 +37,20 @@ function rateLimitConsume(ip: string | undefined) {
 }
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
-function safeLogError(e: any) {
-  const msg = e?.message || String(e);
-  console.error("[chat-api-error]", msg.substring(0, 200));
+function safeLogError(e: unknown) {
+  const msg = asMessage(e).substring(0, 200);
+  console.error("[chat-api-error]", msg);
 }
 
-function classifyError(e: any): { status: number; message: string; code: string } {
-  const raw = (e?.message || "").toLowerCase();
+function asMessage(e: unknown): string {
+  if (!e) return '';
+  if (typeof e === 'string') return e;
+  if (e instanceof Error) return e.message;
+  try { return JSON.stringify(e); } catch { return String(e); }
+}
+
+function classifyError(e: unknown): { status: number; message: string; code: string } {
+  const raw = asMessage(e).toLowerCase();
   if (raw.includes("abort") || raw.includes("timeout")) return { status: 504, message: "요청이 시간 초과되었습니다.", code: 'TIMEOUT' };
   if (raw.includes("429") || raw.includes("rate") || raw.includes("too many")) return { status: 429, message: "요청이 일시적으로 많습니다. 잠시 후 다시 시도해주세요.", code: 'RATE_LIMIT' };
   if (raw.includes("quota") || raw.includes("exceed")) return { status: 503, message: "모델 사용 한도가 잠시 초과되었습니다. 잠시 후 재시도해주세요.", code: 'QUOTA_EXCEEDED' };
@@ -93,9 +100,9 @@ async function callGeminiWithRetry(prompt: string, attempts = 0): Promise<string
   }
 }
 
-export async function POST(req: any) {
+export async function POST(req: Request) {
   try {
-    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.ip || "anon";
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || (req as any).ip || "anon";
     const ua = req.headers.get('user-agent') || '';
     if (DISALLOWED_UA_PATTERNS.some(r => r.test(ua))) {
       return NextResponse.json({ errorCode: 'BLOCKED_UA', message: '허용되지 않는 클라이언트.' }, { status: 400 });
@@ -106,7 +113,7 @@ export async function POST(req: any) {
     }
     if (rl.delay) await sleep(rl.delay);
 
-    const body = await req.json().catch(() => ({}));
+    const body = await req.json().catch(() => ({} as any));
     const { messages } = body as { messages?: { role: string; content: string }[] };
     const validation = validateMessages(messages);
     if (!validation.ok) {
@@ -120,12 +127,12 @@ export async function POST(req: any) {
     try {
       const text = await callGeminiWithRetry(prompt);
       return NextResponse.json({ reply: text });
-    } catch (err: any) {
+    } catch (err: unknown) {
       const mapped = classifyError(err);
       safeLogError(err);
       return NextResponse.json({ errorCode: mapped.code, message: mapped.message }, { status: mapped.status });
     }
-  } catch (e: any) {
+  } catch (e: unknown) {
     safeLogError(e);
     const mapped = classifyError(e);
     return NextResponse.json({ errorCode: mapped.code, message: mapped.message }, { status: mapped.status });

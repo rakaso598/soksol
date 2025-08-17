@@ -62,7 +62,7 @@ export default function ChatPage() {
           },
         ]);
       }
-    } catch (e: any) {
+    } catch (_e: unknown) {
       setMessages((prev) => [
         ...prev,
         { id: crypto.randomUUID(), role: "error", content: "서버 오류가 발생했습니다." },
