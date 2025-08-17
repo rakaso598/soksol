@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import { validateMessages } from "@/lib/validateMessages";
 
 const SYSTEM_PROMPT = `당신은 사용자의 고민을 판단 없이 경청하고 공감하며 스스로 답을 찾도록 돕는 따뜻한 AI 상담사입니다. 
@@ -8,14 +8,15 @@ const SYSTEM_PROMPT = `당신은 사용자의 고민을 판단 없이 경청하�
 - 위험 징후(자해/타해)가 강하게 드러나면 전문 도움(긴급 상담/전문기관)에 연결하라고 부드럽게 권유합니다.
 - 답변은 3~6문장 내로 따뜻하고 명료하게 유지합니다.`;
 
-let genAI: GoogleGenerativeAI | null = null;
+let aiClient: GoogleGenAI | null = null;
 function getClient() {
-  if (!genAI) {
-    const apiKey = process.env.GEMINI_API_KEY;
+  if (!aiClient) {
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GENAI_API_KEY;
     if (!apiKey) throw new Error("GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.");
-    genAI = new GoogleGenerativeAI(apiKey);
+    // Initialize new GenAI client
+    aiClient = new GoogleGenAI({ apiKey });
   }
-  return genAI;
+  return aiClient;
 }
 
 // Rate limiting (simple in-memory sliding window with progressive delay)
@@ -55,6 +56,7 @@ function classifyError(e: unknown): { status: number; message: string; code: str
   if (raw.includes("429") || raw.includes("rate") || raw.includes("too many")) return { status: 429, message: "요청이 일시적으로 많습니다. 잠시 후 다시 시도해주세요.", code: 'RATE_LIMIT' };
   if (raw.includes("quota") || raw.includes("exceed")) return { status: 503, message: "모델 사용 한도가 잠시 초과되었습니다. 잠시 후 재시도해주세요.", code: 'QUOTA_EXCEEDED' };
   if (raw.includes("api key") || raw.includes("permission") || raw.includes("unauthorized") || raw.includes("403") || raw.includes("401")) return { status: 500, message: "API 인증 문제가 발생했습니다. 서비스 점검 후 다시 이용해주세요.", code: 'AUTH' };
+  if (raw.includes("404") || raw.includes("not found") || raw.includes("model")) return { status: 502, message: "모델을 찾을 수 없습니다. 환경변수 GEN_MODEL이 올바른지 확인하세요.", code: 'MODEL_NOT_FOUND' };
   return { status: 500, message: "서버 오류가 발생했습니다. 다시 시도해주세요.", code: 'INTERNAL' };
 }
 
@@ -79,15 +81,56 @@ function mapValidation(reason: string): { status: number; code: string; message:
 
 const DISALLOWED_UA_PATTERNS = [/python-requests/i, /curl\/\d+/i, /wget/i];
 
+function extractTextFromResponse(resp: unknown): string {
+  // Handle several possible SDK response shapes
+  try {
+    const anyResp = resp as any;
+    // Common: { text: '...' }
+    if (typeof anyResp?.text === 'string' && anyResp.text.trim()) return anyResp.text.trim();
+    // Common genai: { candidates: [{ content: { text: '...' } }] }
+    if (Array.isArray(anyResp?.candidates) && anyResp.candidates.length) {
+      const c = anyResp.candidates[0];
+      if (typeof c?.content?.text === 'string' && c.content.text.trim()) return c.content.text.trim();
+      if (typeof c?.text === 'string' && c.text.trim()) return c.text.trim();
+      if (typeof c?.message?.content?.text === 'string' && c.message.content.text.trim()) return c.message.content.text.trim();
+    }
+    // Newer shape: { output: [{ content: [{ text: '...' }] }] }
+    if (Array.isArray(anyResp?.output) && anyResp.output.length) {
+      const out = anyResp.output[0];
+      if (Array.isArray(out?.content) && out.content.length && typeof out.content[0]?.text === 'string') return out.content[0].text;
+    }
+    // Fallback to stringifying limited size
+    const s = JSON.stringify(anyResp);
+    return s.length > 1000 ? s.substring(0, 1000) + '...' : s;
+  } catch (e) {
+    return '';
+  }
+}
+
 async function callGeminiWithRetry(prompt: string, attempts = 0): Promise<string> {
   const client = getClient();
-  const model = client.getGenerativeModel({ model: "gemini-pro" });
+  // Allow model to be set via env; normalize to SDK expectation (prefix with 'models/' if missing)
+  const rawModel = process.env.GEN_MODEL || "gemini-2.5-flash";
+  const modelName = rawModel.startsWith('models/') ? rawModel : `models/${rawModel}`;
+
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15000);
+  // increase timeout slightly for network/model latency
+  const timeout = setTimeout(() => controller.abort(), 20000);
   try {
-    const result = await model.generateContent(prompt, { signal: controller.signal as unknown as AbortSignal });
+    // The SDK may accept different param shapes; pass a minimal well-formed request.
+    const payload: any = { model: modelName };
+    // newer SDKs accept contents or input; include 'content' for backwards compat
+    payload.contents = [{ type: 'text', text: prompt }];
+    const response = await client.models.generateContent(payload as any, { signal: controller.signal as any }).catch(async (e: unknown) => {
+      // Some SDK versions expect { input: '...' } or { prompt: '...' }
+      const altPayload = { model: modelName, input: prompt };
+      return client.models.generateContent(altPayload as any, { signal: controller.signal as any });
+    });
+
     clearTimeout(timeout);
-    return result.response.text();
+    const text = extractTextFromResponse(response);
+    if (!text || text.length === 0) throw new Error('Empty response from model');
+    return text;
   } catch (err: unknown) {
     clearTimeout(timeout);
     const raw = asMessage(err).toLowerCase();
