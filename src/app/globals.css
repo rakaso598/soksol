@@ -168,3 +168,16 @@ button.chat-send:disabled { opacity: 0.5; }
 button.chat-send:focus-visible { outline: 2px solid rgba(16,185,129,0.18); outline-offset: 3px; }
 
 .readable { color: var(--foreground) !important; }
+
+/* Prevent iOS Safari auto-zoom on form focus by keeping text size >= 16px on small screens */
+html, body {
+  -webkit-text-size-adjust: 100%; /* respect author sizes and avoid auto-zoom */
+}
+
+@media (max-width: 520px) {
+  textarea.chat-input, input, button.chat-send {
+    font-size: 16px; /* iOS Safari auto-zoom threshold */
+    line-height: 1.4;
+  }
+  textarea.chat-input::placeholder { font-size: 15px; }
+}
