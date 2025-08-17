@@ -21,7 +21,7 @@ export default function Home() {
           <Link href="/privacy-check" className="underline text-rose-600 hover:text-rose-700">
             실시간 비저장 증명
           </Link>
-          <Link href="/PRIVACY" className="underline text-amber-600 hover:text-amber-700">
+          <Link href="/privacy" className="underline text-amber-600 hover:text-amber-700">
             개인정보 처리방침
           </Link>
         </div>
