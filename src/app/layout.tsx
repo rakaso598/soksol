@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     images: ["/og.png"],
   },
   manifest: "/manifest.json",
-  themeColor: "#f87171",
+  themeColor: "#7dd3fc",
 };
 
 export default function RootLayout({
@@ -46,14 +46,14 @@ export default function RootLayout({
     <html lang="ko" className="h-full">
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#f87171" />
+        <meta name="theme-color" content="#7dd3fc" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col app-bg force-light text-[15px] text-[var(--foreground)]`}
       >
         {/* Global Header could be inserted here if needed */}
         <div className="flex-1 flex flex-col">{children}</div>
-        <footer className="text-center text-xs text-[var(--foreground-soft)] py-6 border-t mt-12 bg-white/50 backdrop-blur-sm space-y-2">
+        <footer className="text-center text-xs text-[var(--foreground-soft)] py-6 border-t mt-12 bg-sky-50/70 backdrop-blur-sm space-y-2">
           <p className="mb-1">
             이 서비스는 사용자의 대화 내용을 저장하지 않습니다. (개인정보 처리방침: 수집 대상 없음)
           </p>
