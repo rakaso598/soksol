@@ -44,6 +44,27 @@
   }
 }
 
+/* Force light theme utility: applying this class to <body> will override dark-mode variables */
+.force-light {
+  --background: #F4FBFF; /* very light sky */
+  --foreground: #16313a; /* deep teal for readable text */
+  --foreground-soft: #2b4f57;
+  --color-surface: #FFFFFF;
+  --color-surface-soft: #F0FBFF;
+  --color-surface-alt: #F7FEFF;
+  --color-border-soft: #E3F6FB;
+  --color-accent-from: #9ED8FF;
+  --color-accent-to: #79C6F9;
+  --color-accent-strong-from: #4DA8FF;
+  --color-accent-strong-to: #2DB7C7;
+  --color-accent-tint: #eaf9ff;
+  --color-error-bg: #FFECEC;
+  --color-error-text: #B03030;
+  --color-crisis-bg: #FFF7F5;
+  --color-crisis-text: #C55240;
+  --color-muted-text: #6e7b80;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

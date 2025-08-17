@@ -49,11 +49,11 @@ export default function RootLayout({
         <meta name="theme-color" content="#f87171" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col app-bg text-[15px] text-[#3b302f]`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col app-bg force-light text-[15px] text-[var(--foreground)]`}
       >
         {/* Global Header could be inserted here if needed */}
         <div className="flex-1 flex flex-col">{children}</div>
-        <footer className="text-center text-xs text-[#7a6f6e] py-6 border-t mt-12 bg-white/50 backdrop-blur-sm space-y-2">
+        <footer className="text-center text-xs text-[var(--foreground-soft)] py-6 border-t mt-12 bg-white/50 backdrop-blur-sm space-y-2">
           <p className="mb-1">
             이 서비스는 사용자의 대화 내용을 저장하지 않습니다. (개인정보 처리방침: 수집 대상 없음)
           </p>
