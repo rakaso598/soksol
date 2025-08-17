@@ -79,7 +79,7 @@ export default function ChatPage() {
         )}
         {messages.map((m) => (
           <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-            <div className={`px-4 py-2 max-w-[80%] text-sm leading-relaxed whitespace-pre-wrap shadow-sm ${m.role === "user" ? "chat-bubble-user" : m.role === "bot" ? "chat-bubble-bot" : "chat-bubble-error"}`}>
+            <div className={`px-4 py-2 max-w-[80%] text-sm leading-relaxed whitespace-pre-wrap shadow-sm readable ${m.role === "user" ? "chat-bubble-user" : m.role === "bot" ? "chat-bubble-bot" : "chat-bubble-error"}`}>
               {m.content}
             </div>
           </div>
@@ -93,7 +93,7 @@ export default function ChatPage() {
       </div>
       <div className="mt-4">
         <div className="relative">
-          <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKey} placeholder="편하게 털어놓아도 좋아요..." rows={3} className="w-full resize-none rounded-xl border chat-input p-4 pr-24 text-sm" disabled={loading} aria-label="메시지 입력" />
+          <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKey} placeholder="편하게 털어놓아도 좋아요..." rows={3} className="w-full resize-none rounded-xl border chat-input p-4 pr-24 text-sm text-foreground" disabled={loading} aria-label="메시지 입력" />
           <button onClick={handleSend} className="absolute bottom-3 right-3 px-5 py-2 rounded-full chat-send text-sm font-medium disabled:cursor-not-allowed" disabled={!input.trim() || loading} aria-disabled={!input.trim() || loading}>
             {loading ? "전송중" : "보내기"}
           </button>
