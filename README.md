@@ -251,3 +251,37 @@ Or with docker-compose:
 Notes:
 - For production in a real deploy, set NODE_ENV=production and provide required secrets via environment variables or secret manager.
 - The Dockerfile runs the Next.js production server (npm start).
+
+## 상세 업데이트 (보안 · CI · 배포 관련 변경 사항)
+아래는 최근 적용된 보안 및 CI 개선의 상세 요약입니다. 배포 전 반드시 이 항목들을 점검하세요.
+
+- .gitignore
+  - `.env*` 전체 무시는 위험하여 로컬 비밀 파일들만 무시하도록 조정(`.env.local`, `.env`, `.env.*.local` 등). 예시 템플릿(`.env.local.example`, `.env.example`)은 추적(커밋)되도록 유지하여 실수로 템플릿을 지우거나 덮어쓰는 것을 방지함.
+
+- Secrets 검사
+  - `scripts/check-secrets.js` 추가: 로컬/CI에서 필수 시크릿 누락(또는 플레이스홀더) 여부를 검사. CI에 넣어 배포 전 필수 값 검사 권장.
+  - CI 워크플로 `ci-secrets-check.yml` 보강: 포크 PR에서 시크릿 접근 불가 문제를 우회하는 guard 추가. Android keystore 시크릿은 "베이스64가 제공되면 나머지 값들도 모두 존재해야 함(all-or-none)" 규칙을 적용.
+
+- CI 보안 파이프라인
+  - `.github/workflows/ci-security.yml`: gitleaks 비밀 스캔, npm audit(허용 수준: moderate), Jest 테스트 실행을 포함. gitleaks/액션 로그 및 허위양성 여부는 주기적 검토 권장.
+  - `.github/workflows/docker-build.yml`: Buildx로 이미지 빌드 후 Trivy 스캔, GHCR 푸시는 `GHCR_TOKEN` 유무에 따라 분기.
+
+- Docker 이미지(주의사항)
+  - Dockerfile은 멀티스테이지로 구성되어 있으나 `npm ci`를 사용하므로 `package-lock.json` 부재 시 빌드 실패 가능. 두 옵션: lockfile을 커밋하거나 Dockerfile을 `npm install --production`로 대체 권장.
+  - HEALTHCHECK에 `curl` 사용: 베이스 이미지에 curl 미설치 시 헬스체크 실패 가능 → 이미지 빌드 시 `curl` 설치 추가 또는 Node 기반 헬스체크로 대체 권장.
+
+- 로그·모니터링·PII 보호
+  - Sentry 설정 파일(`sentry.server.config.ts`, `sentry.client.config.ts`)에 beforeSend/breadcrumb 훅을 두어 요청 body(채팅 내용) 제거 및 예외 메시지 길이 제한을 적용. DSN 미설정 시 비활성화되도록 설계.
+
+- 사전 배포 필수 체크리스트 (MVP)
+  1. GitHub Secrets 등록: `GEMINI_API_KEY` (필수). Android 릴리스 시 `ANDROID_KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`. 권장: `GHCR_TOKEN`, `SENTRY_DSN`/`NEXT_PUBLIC_SENTRY_DSN`.
+  2. 브랜치 보호 규칙 설정: Require status checks에 `CI - Security & Tests`, `CI - Secrets Presence Check`, `Docker Build & Scan`(선택) 포함.
+  3. 로컬 테스트: `npm test`, `node scripts/check-secrets.js`, `npm run scan:secrets`(gitleaks).
+  4. Docker 이미지 테스트: `docker build -t soksol:local .` → 빌드 실패 시 Dockerfile 수정(위의 권장사항 참고).
+  5. Sentry DSN 등록 후 테스트 이벤트 전송 및 beforeSend 동작 검증.
+
+- 빠른 검증 명령들
+  - 시크릿 체크: `node scripts/check-secrets.js`
+  - 시크릿 스캔: `npm run scan:secrets`
+  - 테스트: `npm test`
+  - 로컬 도커 빌드: `docker build -t soksol:local .`
