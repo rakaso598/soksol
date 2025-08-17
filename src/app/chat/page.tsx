@@ -61,7 +61,7 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-160px)] max-w-3xl mx-auto w-full p-4">
       <header className="flex items-center justify-between py-2 mb-2">
-        <Link href="/" className="font-semibold text-lg bg-gradient-to-r from-rose-500 to-amber-500 text-transparent bg-clip-text">
+        <Link href="/" className="font-semibold text-lg bg-gradient-to-r from-[#34D399] via-[#86EFAC] to-[#CFFBE6] text-transparent bg-clip-text">
           속솔
         </Link>
         <span className="text-xs text-[#7a6f6e]">대화는 저장되지 않습니다</span>
@@ -70,7 +70,7 @@ export default function ChatPage() {
         <div className="mb-3 text-[11px] leading-relaxed px-3 py-2 flex items-start gap-2 crisis-box">
           <span className="font-semibold">위기 안내:</span>
           <span className="flex-1">자해·타해 위험이나 즉각적 위기라면 112 / 1393 / 1588-9191 등 전문기관에 즉시 연락하세요. 속솔은 의료 서비스가 아닙니다.</span>
-          <button onClick={() => setShowCrisis(false)} className="ml-2 text-rose-500 hover:text-rose-600 text-xs font-medium">닫기</button>
+          <button onClick={() => setShowCrisis(false)} className="ml-2 text-[#10B981] hover:text-[#0ea56f] text-xs font-medium">닫기</button>
         </div>
       )}
       <div className="flex-1 overflow-y-auto space-y-5 p-5 chat-surface" aria-live="polite" aria-label="채팅 메시지">
