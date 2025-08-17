@@ -32,7 +32,7 @@
 - 프로덕션 환경에 secret 추가가 필요한 경우 환경(Production/Staging) 명시
 
 ## 리뷰어 / 라벨 추천
-- 리뷰어: @팀-백엔드, @팀-프론트 (프로젝트 규칙에 맞게 수정)
+- 리뷰어: @rakaso598, @your-frontend-team
 - 라벨: dependencies / breaking / ci / bug / enhancement
 
 ## 추가 메모 (옵션)

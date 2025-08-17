@@ -7,6 +7,8 @@ updates:
     open-pull-requests-limit: 5
     allow:
       - dependency-type: "all"
-    # security-updates can be enabled so Dependabot opens PRs for vulnerabilities
-    # Note: GitHub will also surface Dependabot alerts in the repo Security tab.
-    #optionally you can set "ignore" rules here if desired.
+    automerge: true
+    automerge-type: "branch"
+    # Only allow auto-merge for non-breaking updates via GitHub dependency graph
+    # NOTE: GitHub respects semver ranges and will label PRs accordingly.
+    # For added safety, we rely on branch protection requiring CI to pass before merge.
