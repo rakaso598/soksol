@@ -25,8 +25,12 @@ export default function ChatPage() {
   }, []);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading]);
+    // Only scroll when there is at least one message or when messages were just added.
+    // Prevent scrolling on initial mount when message list is empty (avoids page jumping to bottom).
+    if (!endRef.current) return;
+    if (messages.length === 0 && !loading) return;
+    endRef.current.scrollIntoView({ behavior: messages.length > 0 ? "smooth" : "auto" });
+  }, [messages.length, loading]);
 
   async function handleSend() {
     if (!input.trim() || loading) return;
