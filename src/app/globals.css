@@ -1,21 +1,39 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --background: #FFF9F5; /* softer warm cream */
+  --foreground: #2F2F33; /* readable dark */
+  --color-surface: #FFFFFF;
+  --color-surface-soft: #FFEFE7;
+  --color-border-soft: #F5E2DA;
+  --color-accent-from: #fda4af; /* rose-300ish */
+  --color-accent-to: #fbbf77;   /* amber-apricot */
+  --color-accent-strong-from: #fb7185; /* rose-400 */
+  --color-accent-strong-to: #f59e0b;   /* amber-500 */
+  --color-error-bg: #FFE5E5;
+  --color-error-text: #B03030;
+  --color-crisis-bg: #FFF2ED;
+  --color-crisis-text: #C55240;
+  --color-muted-text: #64666F;
+  --radius-bubble: 1.25rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #1E1E22;
+    --foreground: #F5F5F6;
+    --color-surface: #26262B;
+    --color-surface-soft: #2E2E34;
+    --color-border-soft: #3A3A42;
+    --color-accent-from: #fb7185;
+    --color-accent-to: #fbbf77;
+    --color-accent-strong-from: #f43f5e;
+    --color-accent-strong-to: #f59e0b;
+    --color-error-bg: #3B1E1E;
+    --color-error-text: #FCA5A5;
+    --color-crisis-bg: #402726;
+    --color-crisis-text: #fda4af;
+    --color-muted-text: #A0A2AC;
   }
 }
 
@@ -23,4 +41,68 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Utility classes (plain CSS equivalents) */
+.chat-surface {
+  background: rgba(255,255,255,0.8);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border-soft);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  border-radius: 1rem;
+}
+.chat-bubble-user {
+  background: linear-gradient(135deg,var(--color-accent-from),var(--color-accent-to));
+  color:#fff;
+  border-radius: var(--radius-bubble);
+}
+.chat-bubble-bot {
+  background: var(--color-surface-soft);
+  color: var(--foreground);
+  border-radius: var(--radius-bubble);
+}
+.chat-bubble-error {
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 1px solid #FFB8B8;
+  border-radius: var(--radius-bubble);
+}
+.chat-bubble-loading {
+  background: var(--color-surface-soft);
+  color: var(--color-muted-text);
+  border-radius: var(--radius-bubble);
+}
+.crisis-box {
+  background: var(--color-crisis-bg);
+  color: var(--color-crisis-text);
+  border: 1px solid var(--color-border-soft);
+  border-radius: 0.75rem;
+}
+
+textarea.chat-input {
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+textarea.chat-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(251,113,133,0.25);
+  border-color: #fda4af;
+}
+button.chat-send {
+  background: linear-gradient(135deg,var(--color-accent-strong-from),var(--color-accent-strong-to));
+  color: #fff;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: opacity 0.2s, box-shadow 0.2s;
+}
+button.chat-send:hover:not(:disabled) {
+  opacity: 0.9;
+}
+button.chat-send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+button.chat-send:focus-visible {
+  outline: 2px solid rgba(251,113,133,0.5);
+  outline-offset: 2px;
 }
