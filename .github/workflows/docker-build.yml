@@ -43,6 +43,7 @@ jobs:
         uses: aquasecurity/trivy-action@v1
         with:
           format: 'table'
+          output: 'trivy-report.txt'
           exit-code: '1'
           scan-type: 'image'
           image-ref: ghcr.io/${{ github.repository_owner }}/soksol:latest
