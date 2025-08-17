@@ -1,6 +1,5 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
 
 interface ChatMessage {
   id: string;
@@ -26,8 +25,12 @@ export default function ChatPage() {
   }, []);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading]);
+    // Only scroll when there is at least one message or when messages were just added.
+    // Prevent scrolling on initial mount when message list is empty (avoids page jumping to bottom).
+    if (!endRef.current) return;
+    if (messages.length === 0 && !loading) return;
+    endRef.current.scrollIntoView({ behavior: messages.length > 0 ? "smooth" : "auto" });
+  }, [messages.length, loading]);
 
   async function handleSend() {
     if (!input.trim() || loading) return;
@@ -59,18 +62,14 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-160px)] max-w-3xl mx-auto w-full p-4">
-      <header className="flex items-center justify-between py-2 mb-2">
-        <Link href="/" className="font-semibold text-lg bg-gradient-to-r from-rose-500 to-amber-500 text-transparent bg-clip-text">
-          속솔
-        </Link>
-        <span className="text-xs text-[#7a6f6e]">대화는 저장되지 않습니다</span>
-      </header>
+    // Let the parent layout manage vertical sizing. Use flex-1 so this page fills available space
+    // and the messages area can scroll only if content overflows.
+    <div className="flex flex-col flex-1 max-w-2xl mx-auto w-full p-4">
       {showCrisis && (
         <div className="mb-3 text-[11px] leading-relaxed px-3 py-2 flex items-start gap-2 crisis-box">
           <span className="font-semibold">위기 안내:</span>
           <span className="flex-1">자해·타해 위험이나 즉각적 위기라면 112 / 1393 / 1588-9191 등 전문기관에 즉시 연락하세요. 속솔은 의료 서비스가 아닙니다.</span>
-          <button onClick={() => setShowCrisis(false)} className="ml-2 text-rose-500 hover:text-rose-600 text-xs font-medium">닫기</button>
+          <button onClick={() => setShowCrisis(false)} className="ml-2 text-[#10B981] hover:text-[#0ea56f] text-xs font-medium">닫기</button>
         </div>
       )}
       <div className="flex-1 overflow-y-auto space-y-5 p-5 chat-surface" aria-live="polite" aria-label="채팅 메시지">
@@ -93,7 +92,7 @@ export default function ChatPage() {
       </div>
       <div className="mt-4">
         <div className="relative">
-          <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKey} placeholder="편하게 털어놓아도 좋아요..." rows={3} className="w-full resize-none rounded-xl border chat-input p-4 pr-24 text-sm text-foreground" disabled={loading} aria-label="메시지 입력" />
+          <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKey} placeholder="편하게 털어놓아도 좋아요..." rows={3} className="w-full resize-none rounded-xl border chat-input p-4 pr-24 text-sm" disabled={loading} aria-label="메시지 입력" />
           <button onClick={handleSend} className="absolute bottom-3 right-3 px-5 py-2 rounded-full chat-send text-sm font-medium disabled:cursor-not-allowed" disabled={!input.trim() || loading} aria-disabled={!input.trim() || loading}>
             {loading ? "전송중" : "보내기"}
           </button>

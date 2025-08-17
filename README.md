@@ -11,6 +11,8 @@
 - WebView 보안 설정(incognito, cache off, mixed content 차단 등)
 - SECURITY.md / PRIVACY.md 문서 추가
 - Android release 빌드 스크립트 `scripts/build-android-release.sh`
+- (신규) /api/chat 응답에 no-store 헤더 및 X-Data-Retention 추가
+- (신규) /privacy-check 페이지로 실시간 캐시 비사용 증명 제공
 
 ## 0. 프로젝트 개요
 - 목표: 사용자의 마음 고민을 익명으로 털어놓고 비워내며 스스로 정리하도록 돕는 AI 동반자
@@ -67,12 +69,15 @@ Vercel 배포 시 동일 키 추가.
 ```
 
 ## 6. 주요 파일 설명
-- `src/app/api/chat/route.ts`: Gemini `gemini-pro` 모델 호출. 마지막 user 메시지와 시스템 프롬프트 결합.
+- `src/app/api/chat/route.ts`: Gemini `gemini-pro` 모델 호출. 마지막 user 메시지와 시스템 프롬프트 결합. (no-store 헤더 적용)
 - `src/app/chat/page.tsx`: 클라이언트 컴포넌트. 메시지 상태, 로딩 토글, fetch POST.
 - `soksol_mobile/App.tsx`: 배포된 웹 URL(WebView) 로드 + ActivityIndicator.
+- `src/app/privacy-check/page.tsx`: 비저장/캐시 미사용 실시간 증명 페이지.
 
 ## 7. 품질 / 보안 주안점
 - 대화 저장 금지: 서버에서 DB/파일 I/O 없음.
+- 모든 챗 API 응답 헤더: `Cache-Control: no-store, no-cache, must-revalidate`, `Pragma: no-cache`, `X-Data-Retention: none`.
+- /privacy-check 페이지에서 서버 타임스탬프가 새로고침마다 갱신됨을 통해 캐시 비활성 확인.
 - 에러 시 민감 텍스트 로그 최소화 (현재 console.error 사용 – 운영 배포 시 Sentry 등 적용 시 PII 필터 필요)
 - 모델 호출 실패 시 일반적 오류 메시지 반환.
 
@@ -203,8 +208,7 @@ chmod +x scripts/generate-icons.sh
 
 ## 21. 오류 모니터링 (준비)
 - `@sentry/nextjs` 설치 및 `sentry.client.config.ts`, `sentry.server.config.ts` 생성
-- PII/채팅 내용 제거: beforeSend/ beforeBreadcrumb 에서 body 삭제 및 URL path만 유지
-- 환경 변수: `SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN` (예: .env.local) – 현재 비어있으면 비활성
+- PII/채팅 내용 제거: beforeSend/breadcrumb 훅을 두어 요청 body(채팅 내용) 제거 및 예외 메시지 길이 제한을 적용. DSN 미설정 시 비활성화되도록 설계.
 
 ## 22. 추가 보안 / 안정화 정리
 현재 적용됨:
@@ -214,11 +218,11 @@ chmod +x scripts/generate-icons.sh
 - Referrer-Policy strict-origin-when-cross-origin
 - X-Content-Type-Options nosniff
 - Permissions-Policy 최소화(camera/mic/geolocation 비활성)
-- PWA service worker: API(NetworkOnly) / 정적 자산 캐시 분리
+- PWA service worker: API(NetworkOnly) / 정적 자산 캐시 분리 (chat 응답 no-store)
 - In-memory rate limit + 소프트 지연(jitter)
 - Gemini 호출 타임아웃 및 오류 범주화
 - Sentry 설정 (DSN 없으면 비활성, body 제거)
-- 사용자 입력 저장/캐시 금지 정책 반영
+- 사용자 입력 저장/캐시 금지 정책 반영 (/privacy-check로 검증 가능)
 
 추가 고려 가능(선택):
 - nonce 기반 CSP script-src 강화 (빌드 시 헤더 삽입 로직 확장 필요)
