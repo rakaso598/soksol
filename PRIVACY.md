@@ -1,4 +1,4 @@
-# PRIVACY POLICY (简要)
+# PRIVACY POLICY
 
 서비스 철학: 비저장 (No Retention)
 
