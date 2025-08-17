@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,9 +52,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col app-bg force-light text-[15px] text-[var(--foreground)]`}
       >
-        {/* Global Header could be inserted here if needed */}
+        {/* Global Header: always-visible brand logo (solid color for SSR/CSR stability) */}
+        <header className="w-full border-b border-[var(--color-border-soft)] bg-transparent">
+          <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <Link href="/" className="text-[#10B981] font-semibold text-lg leading-none">속솔</Link>
+            <div className="text-xs text-[var(--foreground-soft)]">대화는 저장되지 않습니다</div>
+          </div>
+        </header>
+
         <div className="flex-1 flex flex-col">{children}</div>
-        <footer className="text-center text-xs text-[var(--foreground-soft)] py-6 mt-12 bg-[rgba(16,185,129,0.08)] backdrop-blur-sm space-y-2">
+        <footer className="text-center text-xs text-[var(--foreground-soft)] py-6 border-t mt-12 bg-[rgba(16,185,129,0.08)] backdrop-blur-sm space-y-2">
           <p className="mb-1">
             이 서비스는 사용자의 대화 내용을 저장하지 않습니다. (개인정보 처리방침: 수집 대상 없음)
           </p>
