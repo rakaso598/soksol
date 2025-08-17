@@ -61,7 +61,7 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-160px)] max-w-3xl mx-auto w-full p-4">
       <header className="flex items-center justify-between py-2 mb-2">
-        <Link href="/" className="font-semibold text-lg bg-gradient-to-r from-[#34D399] via-[#86EFAC] to-[#CFFBE6] text-transparent bg-clip-text">
+        <Link href="/" className="font-semibold text-lg text-[#10B981]">
           속솔
         </Link>
         <span className="text-xs text-[#7a6f6e]">대화는 저장되지 않습니다</span>
