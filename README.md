@@ -1,8 +1,8 @@
 # SokSol (속솔) - [✨바로가기](https://soksol.vercel.app)
 
-<img width="1491" height="775" alt="image" src="https://github.com/user-attachments/assets/7efc7975-e12b-4ed4-b634-cc17cce88151" />
+<img width="690" height="893" alt="image" src="https://github.com/user-attachments/assets/5f5619eb-cc0c-4de9-82db-e5b7d2f905fa" />
 
-<img width="492" height="469" alt="image" src="https://github.com/user-attachments/assets/88449d5c-c774-4d59-aed3-bff75a35e2ba" />
+![soksol-시연](https://github.com/user-attachments/assets/3daf4cd4-264e-48ab-976f-8311df0f470c)
 
 <details>
 <summary><h3>💡 WebView에서 웹 앱 빌드로 구현</h3></summary>
