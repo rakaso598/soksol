@@ -9,7 +9,7 @@ import React from 'react';
 import { SafeAreaView, StyleSheet, StatusBar, Platform } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-const WEB_URL = 'https://soksol.com';
+const WEB_URL = 'https://soksol.vercel.app';
 
 const App = () => {
   return (
