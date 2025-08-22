@@ -74,7 +74,29 @@ export default function ChatPage() {
       )}
       <div className="flex-1 overflow-y-auto space-y-5 p-5 chat-surface" aria-live="polite" aria-label="채팅 메시지">
         {messages.length === 0 && !loading && (
-          <p className="text-center text-sm text-[#7a6f6e] mt-10">마음속에 있는 생각을 편하게 적어보세요.</p>
+          <div className="mt-10 space-y-6">
+            <div className="max-w-[80%] px-4 py-3 chat-bubble-bot shadow-sm">
+              <div className="text-sm leading-relaxed">
+                <p className="mb-3">
+                  안녕하세요! 저는 <strong>SokSol(속솔)</strong>의 AI 상담사입니다. 🌱
+                </p>
+                <p className="mb-3">
+                  이곳은 마음의 고민을 편안하게 나눌 수 있는 <em>완전히 안전한 공간</em>입니다.
+                  모든 대화는 실시간으로만 처리되며 <strong>어디에도 저장되지 않습니다</strong>.
+                </p>
+                <p className="mb-3">
+                  판단하지 않고 경청하며, 스스로 답을 찾아가는 과정을 함께하겠습니다.
+                  어떤 이야기든 편하게 시작해보세요.
+                </p>
+                <p className="text-xs text-gray-600 border-t border-gray-200 pt-2 mt-3">
+                  💡 <strong>SokSol</strong>은 전문 상담이나 의료 치료와는 별개의 일상적 대화 서비스입니다.
+                </p>
+              </div>
+            </div>
+            <p className="text-center text-sm text-[#7a6f6e]">
+              마음속에 있는 생각을 편하게 적어보세요 ✨
+            </p>
+          </div>
         )}
         {messages.map((m) => (
           <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
