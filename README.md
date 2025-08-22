@@ -5,7 +5,7 @@
 <img width="492" height="469" alt="image" src="https://github.com/user-attachments/assets/88449d5c-c774-4d59-aed3-bff75a35e2ba" />
 
 <details>
-<summary><h3>WebView에서 웹 앱 빌드로 구현</h3></summary>
+<summary><h3>💡 WebView에서 웹 앱 빌드로 구현</h3></summary>
 
 <img width="856" height="702" alt="image" src="https://github.com/user-attachments/assets/c3e5cb90-f10f-4df0-b3cd-04359069b095" />
 
@@ -76,7 +76,7 @@ WebView는 **MVP(최소 기능 제품)** 또는 **빠른 프로토타입** 제�
 </details>
 
 <details>
-<summary><h3>AI 챗봇 시스템 프롬프트 적용</h3></summary>
+<summary><h3>🤖 AI 챗봇 시스템 프롬프트 적용</h3></summary>
 
 <img width="717" height="562" alt="image" src="https://github.com/user-attachments/assets/5bdf0628-cfeb-4361-8211-64232a97c53b" />
 
@@ -130,7 +130,7 @@ AI 챗봇 개발에서 \*\*시스템 프롬프트(System Prompt)\*\*는 챗봇�
 </details>
 
 <details>
-<summary><h3>React Native 앱에서 JavaScript 번들 불러오기 실패 문제</h3></summary>
+<summary><h3>‼️ React Native 앱에서 JavaScript 번들 불러오기 실패 문제</h3></summary>
 
 <img width="706" height="751" alt="image" src="https://github.com/user-attachments/assets/74b5d2b4-94de-45bf-bdd2-23dc7a1ec812" />
 
@@ -189,7 +189,7 @@ AI 챗봇 개발에서 \*\*시스템 프롬프트(System Prompt)\*\*는 챗봇�
 </details>
 
 <details>
-<summary><h3>Android Studio 가상 기기(AVD) 강제 종료 문제</h3></summary>
+<summary><h3>⚠️ Android Studio 가상 기기(AVD) 강제 종료 문제</h3></summary>
 
 <img width="382" height="164" alt="image" src="https://github.com/user-attachments/assets/895b373a-0e00-48fb-acff-bdd8f9b9d168" />
 
@@ -239,11 +239,9 @@ AI 챗봇 개발에서 \*\*시스템 프롬프트(System Prompt)\*\*는 챗봇�
 
 </details>
 
-익명 AI 멘탈 케어 웹/모바일 프로젝트
-
 ## 📋 프로젝트 개요
 
-**SokSol(속솔)**은 사용자가 마음의 고민을 익명으로 털어놓고 AI와 대화하며 스스로를 정리할 수 있도록 돕는 멘탈케어 서비스입니다.
+SokSol(속솔)은 사용자가 마음의 고민을 익명으로 털어놓고 AI와 대화하며 스스로를 정리할 수 있도록 돕는 멘탈케어 서비스입니다.
 
 ### 핵심 철학
 
