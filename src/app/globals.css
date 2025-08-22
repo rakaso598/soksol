@@ -2,22 +2,22 @@
 
 :root {
   /* Soft green pastel theme */
-  --background: #F4FBF6; /* very light mint */
+  --background: #f4fbf6; /* very light mint */
   --foreground: #16313a; /* deep teal for readable text */
   --foreground-soft: #2b4f57;
-  --color-surface: #FFFFFF;
-  --color-surface-soft: #F6FFF9; /* soft mint */
-  --color-surface-alt: #F9FFFA;
-  --color-border-soft: #E6F7EE;
-  --color-accent-from: #D1FADF; /* light mint */
-  --color-accent-to: #86EFAC;   /* soft green */
-  --color-accent-strong-from: #34D399; /* stronger green */
-  --color-accent-strong-to: #10B981;   /* green-teal */
+  --color-surface: #ffffff;
+  --color-surface-soft: #f6fff9; /* soft mint */
+  --color-surface-alt: #f9fffa;
+  --color-border-soft: #e6f7ee;
+  --color-accent-from: #d1fadf; /* light mint */
+  --color-accent-to: #86efac; /* soft green */
+  --color-accent-strong-from: #34d399; /* stronger green */
+  --color-accent-strong-to: #10b981; /* green-teal */
   --color-accent-tint: #f0fff6;
-  --color-error-bg: #FFECEC;
-  --color-error-text: #B03030;
-  --color-crisis-bg: #FFF7F5;
-  --color-crisis-text: #C55240;
+  --color-error-bg: #ffecec;
+  --color-error-text: #b03030;
+  --color-crisis-bg: #fff7f5;
+  --color-crisis-text: #c55240;
   --color-muted-text: #6e7b80;
   --radius-bubble: 1.25rem;
 }
@@ -31,13 +31,13 @@
     --color-surface-soft: #062019;
     --color-surface-alt: #071816;
     --color-border-soft: #0e2b21;
-    --color-accent-from: #34D399;
-    --color-accent-to: #10B981;
+    --color-accent-from: #34d399;
+    --color-accent-to: #10b981;
     --color-accent-strong-from: #60a5fa;
     --color-accent-strong-to: #2dd4bf;
     --color-accent-tint: #072930;
-    --color-error-bg: #3B1E1E;
-    --color-error-text: #FCA5A5;
+    --color-error-bg: #3b1e1e;
+    --color-error-text: #fca5a5;
     --color-crisis-bg: #402726;
     --color-crisis-text: #fda4af;
     --color-muted-text: #8ea6ab;
@@ -46,29 +46,37 @@
 
 /* Force light theme utility: applying this class to <body> will override dark-mode variables */
 .force-light {
-  --background: #F4FBF6; /* very light mint */
+  --background: #f4fbf6; /* very light mint */
   --foreground: #16313a; /* deep teal for readable text */
   --foreground-soft: #2b4f57;
-  --color-surface: #FFFFFF;
-  --color-surface-soft: #F6FFF9;
-  --color-surface-alt: #F9FFFA;
-  --color-border-soft: #E6F7EE;
-  --color-accent-from: #D1FADF;
-  --color-accent-to: #86EFAC;
-  --color-accent-strong-from: #34D399;
-  --color-accent-strong-to: #10B981;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f6fff9;
+  --color-surface-alt: #f9fffa;
+  --color-border-soft: #e6f7ee;
+  --color-accent-from: #d1fadf;
+  --color-accent-to: #86efac;
+  --color-accent-strong-from: #34d399;
+  --color-accent-strong-to: #10b981;
   --color-accent-tint: #f0fff6;
-  --color-error-bg: #FFECEC;
-  --color-error-text: #B03030;
-  --color-crisis-bg: #FFF7F5;
-  --color-crisis-text: #C55240;
+  --color-error-bg: #ffecec;
+  --color-error-text: #b03030;
+  --color-crisis-bg: #fff7f5;
+  --color-crisis-text: #c55240;
   --color-muted-text: #6e7b80;
 }
 
 /* Global reset to avoid layout overflow caused by default browser margins and sizing */
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-html, body, #__next { height: 100%; }
+html,
+body,
+#__next {
+  height: 100%;
+}
 
 body {
   margin: 0;
@@ -80,9 +88,15 @@ body {
 }
 
 /* text utilities */
-.text-foreground { color: var(--foreground) !important; }
-.text-foreground-soft { color: var(--foreground-soft) !important; }
-.text-muted { color: var(--color-muted-text) !important; }
+.text-foreground {
+  color: var(--foreground) !important;
+}
+.text-foreground-soft {
+  color: var(--foreground-soft) !important;
+}
+.text-muted {
+  color: var(--color-muted-text) !important;
+}
 
 /* Bright layered pastel background (simplified to single color to avoid overlay/filter effect) */
 .app-bg {
@@ -103,22 +117,27 @@ body {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   border: 1px solid var(--color-border-soft);
-  box-shadow: 0 2px 8px rgba(30,60,70,0.06);
+  box-shadow: 0 2px 8px rgba(30, 60, 70, 0.06);
   border-radius: 1rem;
   transition: background 0.2s ease, box-shadow 0.2s ease;
   color: var(--foreground);
 }
 .chat-bubble-user {
-  background: linear-gradient(135deg,var(--color-accent-from),var(--color-accent-to));
-  color:#06202a; /* dark text on light green accent for readability */
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-from),
+    var(--color-accent-to)
+  );
+  color: #06202a; /* dark text on light green accent for readability */
   border-radius: var(--radius-bubble);
-  box-shadow: 0 4px 14px -6px rgba(52,211,153,0.28);
+  box-shadow: 0 4px 14px -6px rgba(52, 211, 153, 0.28);
 }
 .chat-bubble-bot {
   background: var(--color-surface-alt);
   color: var(--foreground);
   border-radius: var(--radius-bubble);
-  box-shadow: inset 0 0 0 1px var(--color-border-soft), 0 1px 2px rgba(0,0,0,0.03);
+  box-shadow: inset 0 0 0 1px var(--color-border-soft),
+    0 1px 2px rgba(0, 0, 0, 0.03);
 }
 .chat-bubble-error {
   background: var(--color-error-bg);
@@ -128,12 +147,80 @@ body {
   box-shadow: 0 0 0 1px #ffd7d7 inset;
 }
 .chat-bubble-loading {
-  background: var(--color-surface-soft);
-  color: var(--color-muted-text);
+  background: var(--color-surface-alt);
+  color: var(--foreground-soft);
   border-radius: var(--radius-bubble);
+  border: 1px solid var(--color-border-soft);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Typing indicator dots animation */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.typing-indicator span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-accent-strong-to);
+  opacity: 0.4;
+  animation: typing-bounce 1.4s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing-bounce {
+  0%,
+  60%,
+  100% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-6px);
+  }
+}
+
+/* Loading shimmer effect for the bubble */
+.loading-shimmer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(16, 185, 129, 0.08),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 .crisis-box {
-  background: linear-gradient(135deg, rgba(255,247,244,0.95), #fff6f4);
+  background: linear-gradient(135deg, rgba(255, 247, 244, 0.95), #fff6f4);
   color: var(--color-crisis-text);
   border: 1px solid var(--color-border-soft);
   border-radius: 0.75rem;
@@ -145,41 +232,68 @@ textarea.chat-input {
   color: var(--foreground) !important;
   caret-color: var(--foreground) !important;
   border: 1px solid var(--color-border-soft);
-  transition: box-shadow 0.15s, border-color 0.15s, background 0.2s;
+  transition: box-shadow 0.15s, border-color 0.15s, background 0.2s,
+    opacity 0.2s;
 }
-textarea.chat-input::placeholder { color: var(--color-muted-text); opacity: 1; }
+textarea.chat-input::placeholder {
+  color: var(--color-muted-text);
+  opacity: 1;
+}
 textarea.chat-input:focus {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(16,185,129,0.12), 0 3px 8px -4px rgba(16,185,129,0.12);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12),
+    0 3px 8px -4px rgba(16, 185, 129, 0.12);
   border-color: var(--color-accent-from);
   background: #fff;
 }
+textarea.chat-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--color-surface-soft) !important;
+}
 button.chat-send {
-  background: linear-gradient(135deg,var(--color-accent-strong-from),var(--color-accent-strong-to));
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-strong-from),
+    var(--color-accent-strong-to)
+  );
   color: #fff;
   font-weight: 600;
-  box-shadow: 0 6px 18px -8px rgba(52,211,153,0.32), 0 2px 6px rgba(0,0,0,0.06);
+  box-shadow: 0 6px 18px -8px rgba(52, 211, 153, 0.32),
+    0 2px 6px rgba(0, 0, 0, 0.06);
 }
 button.chat-send:hover:not(:disabled) {
   opacity: 0.98;
   transform: translateY(-1px);
 }
-button.chat-send:disabled { opacity: 0.5; }
-button.chat-send:focus-visible { outline: 2px solid rgba(16,185,129,0.18); outline-offset: 3px; }
+button.chat-send:disabled {
+  opacity: 0.5;
+}
+button.chat-send:focus-visible {
+  outline: 2px solid rgba(16, 185, 129, 0.18);
+  outline-offset: 3px;
+}
 
-.readable { color: var(--foreground) !important; }
+.readable {
+  color: var(--foreground) !important;
+}
 
 /* Prevent iOS Safari auto-zoom on form focus by keeping text size >= 16px on small screens */
-html, body {
+html,
+body {
   -webkit-text-size-adjust: 100%; /* respect author sizes and avoid auto-zoom */
 }
 
 @media (max-width: 520px) {
-  textarea.chat-input, input, button.chat-send {
+  textarea.chat-input,
+  input,
+  button.chat-send {
     font-size: 16px; /* iOS Safari auto-zoom threshold */
     line-height: 1.4;
   }
-  textarea.chat-input::placeholder { font-size: 15px; }
+  textarea.chat-input::placeholder {
+    font-size: 15px;
+  }
 }
 
 /* Responsive footer tidy-up */
@@ -194,14 +308,29 @@ html, body {
     padding-right: 12px;
     text-align: center;
   }
-  .site-footer p { margin: 6px 0; line-height: 1.35; font-size: 12px; }
+  .site-footer p {
+    margin: 6px 0;
+    line-height: 1.35;
+    font-size: 12px;
+  }
 }
 
 /* Footer compact/full toggle */
-.footer-compact { display: none; }
-.footer-full { display: block; }
+.footer-compact {
+  display: none;
+}
+.footer-full {
+  display: block;
+}
 
 @media (max-width: 520px) {
-  .footer-compact { display: block; font-size: 13px; text-align: center; margin: 6px 0; }
-  .footer-full { display: none; }
+  .footer-compact {
+    display: block;
+    font-size: 13px;
+    text-align: center;
+    margin: 6px 0;
+  }
+  .footer-full {
+    display: none;
+  }
 }
