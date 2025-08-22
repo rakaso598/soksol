@@ -2,107 +2,274 @@
 
 익명 AI 멘탈 케어 웹/모바일 프로젝트
 
-## 변경 사항 요약 (최근 개선)
-- 표준화된 API 오류 포맷 `{ errorCode, message }`
-- 입력 검증 강화 (메시지 수/길이/총량/URL 차단)
-- Gemini 호출 재시도(최대 2회, 지수형 지연)
-- 슬라이딩 윈도 + 점증 지연 rate limit
-- User-Agent 단순 차단 리스트(curl/wget/python-requests)
-- WebView 보안 설정(incognito, cache off, mixed content 차단 등)
-- SECURITY.md / PRIVACY.md 문서 추가
-- Android release 빌드 스크립트 `scripts/build-android-release.sh`
-- (신규) /api/chat 응답에 no-store 헤더 및 X-Data-Retention 추가
-- (신규) /privacy-check 페이지로 실시간 캐시 비사용 증명 제공
+## 📋 프로젝트 개요
 
-## 0. 프로젝트 개요
-- 목표: 사용자의 마음 고민을 익명으로 털어놓고 비워내며 스스로 정리하도록 돕는 AI 동반자
-- 철학: 비움(저장 안 함) · 판단 없는 경청 · 마음의 성장
-- 비저장 정책: 서버 / 클라이언트에 대화 로그 영구 저장 없음 (임시 메모리 렌더링만)
+**SokSol(속솔)**은 사용자가 마음의 고민을 익명으로 털어놓고 AI와 대화하며 스스로를 정리할 수 있도록 돕는 멘탈케어 서비스입니다.
 
-## 1. 모노레포 구조
-```
-./
-  src/app/              # Next.js (웹)
-  mobile/soksol_mobile/  # 실제 React Native 프로젝트 (WebView 패키징)
-  public/                # 웹 정적 자산
-  .env.local.example     # 환경 변수 예시
-  README.md              # (현재 문서)
-```
+### 핵심 철학
 
-## 2. 기술 스택 & 버전
-웹(Next.js)
-- Next.js: 15.4.6 (App Router)
-- React: 19.1.0
-- TypeScript: ^5
-- Tailwind CSS v4 (inline @import 방식)
-- Gemini Client: @google/generative-ai
-- 실행: Turbopack dev 서버
+- **비움(無저장)**: 서버나 클라이언트에 대화 로그를 영구 저장하지 않음
+- **판단 없는 경청**: AI가 사용자를 판단하지 않고 공감하며 경청
+- **마음의 성장**: 스스로 답을 찾아가는 과정을 지원
 
-모바일(React Native)
-- React Native: 0.81.0
-- React: 19.1.0
-- WebView: react-native-webview ^13.15.0
-- CLI: @react-native-community/cli 20.0.0
-- TypeScript: ^5.8.x (템플릿)
+### 주요 특징
 
-## 3. 환경 변수
-`.env.local`
-```
-GEMINI_API_KEY=YOUR_KEY
-```
-Vercel 배포 시 동일 키 추가.
+- 🔒 **완전 익명**: 회원가입, 로그인 불필요
+- 🚫 **무저장 정책**: 대화 내용 서버 저장 안함
+- 📱 **크로스 플랫폼**: 웹 + 안드로이드 앱 지원
+- 🛡️ **보안 강화**: 다층 보안 설정 및 검증 시스템
+- ⚡ **실시간 AI**: Google Gemini 기반 즉시 응답
 
-## 4. 구현 단계 진행 상황
-| 단계 | 내용 | 상태 |
-|------|------|------|
-| 1차 | 랜딩 / 챗 UI 기본 / 더미 API | 완료 |
-| 2차 | Gemini 연동, 로딩, 시스템 프롬프트 | 완료 |
-| 3차 | RN 프로젝트 생성, WebView 포장, 세로 고정 | 진행 중 (기본 구조 완료) |
-| 3차-남음 | 아이콘/스플래시, 서명, 릴리스 빌드, 스토어 자료 준비 | TODO |
+## 🏗️ 기술 스택
 
-## 5. 시스템 프롬프트 (요약)
-```
-- 판단/비난/진단 대신 공감 & 감정 반영 & 개방형 질문
-- 개인정보 저장/수집하지 않음 상기
-- 위험 징후 시 전문 도움 권유
-- 3~6문장 따뜻하고 명료
+### 웹앱 (Next.js)
+
+- **Framework**: Next.js 15.4.6 (App Router)
+- **Runtime**: React 19.1.0
+- **Language**: TypeScript 5+
+- **Styling**: Tailwind CSS v4
+- **AI**: Google Gemini API (@google/genai 0.8.0)
+- **Deployment**: Vercel
+
+### 모바일 앱 (React Native)
+
+- **Framework**: React Native 0.81.0
+- **WebView**: react-native-webview 13.15.0
+- **Platform**: Android (iOS 지원 준비됨)
+- **Build**: Gradle + AAB/APK
+
+### 보안 & 모니터링
+
+- **Error Tracking**: Sentry (PII 필터링)
+- **Security**: CSP, HSTS, Rate Limiting
+- **CI/CD**: GitHub Actions (보안 스캔, 테스트)
+
+## 🚀 빠른 시작
+
+### 필수 요구사항
+
+- Node.js ≥ 18
+- npm 또는 yarn
+- Android Studio (모바일 개발 시)
+
+### 설치 및 실행
+
+1. **저장소 클론**
+
+```bash
+git clone https://github.com/your-repo/soksol.git
+cd soksol
 ```
 
-## 6. 주요 파일 설명
-- `src/app/api/chat/route.ts`: Gemini `gemini-pro` 모델 호출. 마지막 user 메시지와 시스템 프롬프트 결합. (no-store 헤더 적용)
-- `src/app/chat/page.tsx`: 클라이언트 컴포넌트. 메시지 상태, 로딩 토글, fetch POST.
-- `soksol_mobile/App.tsx`: 배포된 웹 URL(WebView) 로드 + ActivityIndicator.
-- `src/app/privacy-check/page.tsx`: 비저장/캐시 미사용 실시간 증명 페이지.
+2. **환경 설정**
 
-## 7. 품질 / 보안 주안점
-- 대화 저장 금지: 서버에서 DB/파일 I/O 없음.
-- 모든 챗 API 응답 헤더: `Cache-Control: no-store, no-cache, must-revalidate`, `Pragma: no-cache`, `X-Data-Retention: none`.
-- /privacy-check 페이지에서 서버 타임스탬프가 새로고침마다 갱신됨을 통해 캐시 비활성 확인.
-- 에러 시 민감 텍스트 로그 최소화 (현재 console.error 사용 – 운영 배포 시 Sentry 등 적용 시 PII 필터 필요)
-- 모델 호출 실패 시 일반적 오류 메시지 반환.
+```bash
+# 환경변수 파일 생성
+cp .env.local.example .env.local
 
-## 8. 향후 작업(우선순위 순)
-1. (모바일) 아이콘 / adaptive icon 제작 및 리소스 교체 (scripts/icon-generate.sh 참고 예정) ✅ 스크립트 추가됨 (`scripts/generate-icons.sh`)
-2. Splash Screen (선택) – 브랜드 컬러 그라데이션 or 흰 배경 로고 (기본 흰 배경 + 아이콘 적용 대기)
-3. Gradle signing 설정 + .gitignore 키 제외 (문서화 완료)
-4. Release 빌드 테스트 (real device)
-5. 웹 성능/메타: Open Graph 이미지 (og.png 완료), PWA (manifest + next-pwa 설정 완료)
-6. 안전 가이드 문구 추가 (footer 반영 완료 + 챗 첫 진입 1회성 위기 안내 배너 추가)
-7. Gemini 응답 토큰/비용 모니터링 방안 문서화 (TODO)
-8. 간단 사용자 피드백 컴포넌트 (비저장 단발성, 선택적)
-9. Rate Limit(간단 in-memory) 적용하여 API 남용 방지 ✅
+# .env.local에서 Gemini API 키 설정
+# GEMINI_API_KEY=your_actual_api_key
+```
 
-## 9. 배포
-- 웹: Vercel (현재 수동 설정 필요) → Production URL 확정 후 RN `WEB_URL` 치환
-- 모바일: AAB 생성 → Play Console 업로드 → 콘텐츠 등급 설문, 개인정보 처리(수집 없음), 카테고리(Health & Fitness - Mental Wellness?)
+3. **의존성 설치 및 실행**
 
-## 10. 개발 실행 요약
-웹:
+```bash
+# 웹앱
+npm install
+npm run dev
+
+# 모바일 앱 (별도 터미널)
+cd mobile/soksol_mobile/SokSol
+npm install
+npx react-native run-android
+```
+
+4. **접속**
+
+- 웹: http://localhost:3000
+- 모바일: 에뮬레이터 또는 실기기에서 앱 실행
+
+## 📁 프로젝트 구조
+
+```
+soksol/
+├── src/app/                     # Next.js 앱 라우터
+│   ├── api/chat/route.ts       # AI 채팅 API 엔드포인트
+│   ├── chat/page.tsx           # 채팅 인터페이스
+│   ├── privacy/page.tsx        # 개인정보처리방침
+│   ├── privacy-check/page.tsx  # 캐시 비사용 검증
+│   └── layout.tsx              # 루트 레이아웃, 보안 헤더
+├── mobile/soksol_mobile/SokSol/ # React Native WebView 래퍼
+│   ├── App.tsx                 # 메인 앱 컴포넌트
+│   └── android/                # 안드로이드 빌드 설정
+├── scripts/                    # 빌드 및 보안 스크립트
+│   ├── build-android-release.sh # 안드로이드 릴리스 빌드
+│   ├── check-secrets.js        # 시크릿 검증
+│   └── generate-icons.sh       # 아이콘 생성
+├── docs/                       # 문서
+│   └── SECURITY-CHECKLIST.md   # 보안 체크리스트
+├── public/                     # 정적 자산
+└── .github/workflows/          # CI/CD 파이프라인
+```
+
+## 🔧 개발 스크립트
+
+```bash
+# 개발
+npm run dev              # 개발 서버 (Turbopack)
+npm run build           # 프로덕션 빌드
+npm run start           # 프로덕션 서버
+
+# 테스트 & 품질
+npm test                # Jest 테스트
+npm run lint            # ESLint 검사
+npm run scan:secrets    # 시크릿 스캔 (gitleaks)
+
+# 보안 검증
+node scripts/check-secrets.js  # 환경변수 검증
+npm audit                      # 취약점 검사
+
+# 모바일 빌드
+npm run build:android:release  # 안드로이드 릴리스 빌드
+```
+
+## 🛡️ 보안 구현
+
+### API 보안
+
+- **Rate Limiting**: IP당 1분에 10회 제한
+- **입력 검증**: 메시지 길이, 개수, URL 차단
+- **에러 분류**: 내부 정보 노출 방지
+- **User-Agent 필터링**: 자동화 도구 차단
+
+### 데이터 보안
+
+- **무저장 정책**: 채팅 데이터 서버 저장 안함
+- **no-store 헤더**: 모든 API 응답에 캐시 방지
+- **PII 보호**: 로그에서 개인정보 제거
+
+### 통신 보안
+
+- **HTTPS 강제**: HSTS 헤더 적용
+- **CSP**: Content Security Policy 설정
+- **프레임 보호**: X-Frame-Options DENY
+
+## 📱 모바일 앱 정보
+
+### 현재 상태
+
+- ✅ React Native WebView 래퍼 완성
+- ✅ 보안 설정 적용 (incognito, cache 비활성화)
+- ✅ 안드로이드 빌드 스크립트 준비
+- ✅ 릴리스 키스토어 설정 (git 제외)
+
+### WebView 설정
+
+```tsx
+<WebView
+  source={{ uri: "https://soksol.vercel.app" }}
+  cacheEnabled={false} // 캐시 비활성화
+  incognito // 시크릿 모드
+  mixedContentMode="never" // HTTPS 강제
+  javaScriptEnabled // JavaScript 허용
+  domStorageEnabled // 필요한 저장소만 허용
+/>
+```
+
+## 🔍 실제 발생 문제 및 해결
+
+### SSL 호스트네임 불일치 (해결됨)
+
+**문제**: 모바일 앱에서 "SSL error: hostname mismatch" 발생
+**원인**: 앱에서 `https://soksol.com` 설정, 실제 배포는 `https://soksol.vercel.app`
+**해결**: App.tsx의 URL을 실제 배포 주소로 수정
+
+### Git 서브모듈 오류 (해결됨)
+
+**문제**: 모바일 폴더가 서브모듈로 인식되어 파일 추가 실패
+**해결**: `git rm --cached` 후 일반 폴더로 재추가
+
+### 보안 키스토어 관리 (해결됨)
+
+**문제**: 릴리스 키스토어가 git에 노출될 위험
+**해결**: .gitignore에 포괄적인 키스토어 제외 규칙 추가
+
+자세한 내용은 [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) 참조
+
+## 📊 현재 구현 상태
+
+| 기능            | 웹앱 | 모바일 | 상태    |
+| --------------- | ---- | ------ | ------- |
+| AI 채팅         | ✅   | ✅     | 완료    |
+| 무저장 정책     | ✅   | ✅     | 완료    |
+| 보안 헤더       | ✅   | ✅     | 완료    |
+| Rate Limiting   | ✅   | ✅     | 완료    |
+| 에러 처리       | ✅   | ✅     | 완료    |
+| PWA 지원        | ✅   | N/A    | 완료    |
+| 안드로이드 빌드 | N/A  | ✅     | 완료    |
+| 스토어 배포     | N/A  | 🔄     | 준비 중 |
+
+## 🎯 배포 정보
+
+### 웹앱
+
+- **Production**: https://soksol.vercel.app
+- **Platform**: Vercel
+- **Environment**: `GEMINI_API_KEY` 필요
+
+### 모바일 앱
+
+- **Package**: com.soksol
+- **Target**: Android 8.0+ (API 26+)
+- **Build**: AAB (Play Store) + APK (사이드로딩)
+
+## 📚 문서
+
+- [개발자 가이드](./DEVELOPER_GUIDE.md) - 상세한 개발 및 기여 가이드
+- [아키텍처 문서](./ARCHITECTURE.md) - 시스템 설계 및 구조
+- [트러블슈팅](./TROUBLESHOOTING.md) - 실제 문제 해결 사례
+- [보안 정책](./SECURITY.md) - 보안 구현 및 정책
+- [개인정보 처리방침](./PRIVACY.md) - 프라이버시 정책
+
+## 🤝 기여하기
+
+1. 저장소 포크
+2. 기능 브랜치 생성 (`git checkout -b feature/new-feature`)
+3. 변경사항 커밋 (`git commit -m 'feat: add new feature'`)
+4. 브랜치 푸시 (`git push origin feature/new-feature`)
+5. Pull Request 생성
+
+### 커밋 컨벤션
+
+- `feat:` 새 기능
+- `fix:` 버그 수정
+- `docs:` 문서 업데이트
+- `style:` 코드 스타일 변경
+- `refactor:` 코드 리팩토링
+- `test:` 테스트 추가/수정
+- `chore:` 빌드/도구 변경
+
+## 📄 라이선스
+
+이 프로젝트는 MIT 라이선스 하에 있습니다. 자세한 내용은 [LICENSE](./LICENSE) 파일을 참조하세요.
+
+## 📞 연락처
+
+- **이슈 리포트**: GitHub Issues
+- **보안 문제**: security@soksol.invalid (placeholder)
+- **개인정보 문의**: privacy@soksol.invalid (placeholder)
+
+---
+
+_"마음을 비우고, 스스로를 찾아가는 여정을 함께합니다."_
+
 ```bash
 npm install
 npm run dev
 ```
+
 모바일(Android):
+
 ```bash
 cd soksol_mobile
 npm install
@@ -110,21 +277,26 @@ npx react-native run-android
 ```
 
 ## 11. 참고 체크리스트 (Play Store)
+
 - 패키지명: com.soksol.app
 - 앱명: 속솔
 - 최소 설명 키워드: 익명, 비저장, AI 경청, 마음 정리
 - 민감성 고지: 의료진 대체 아님, 위기 시 긴급 도움 안내
 
 ## 12. 라이선스 & 저작권
+
 © {YEAR} SokSol. All rights reserved.
 
 ## 13. 테스트 (최소 검증)
+
 웹(Next.js)
+
 - Jest 환경 구성 (`jest.config.js`, `jest.setup.js`).
 - `.env.test` 파일을 통해 `GEMINI_API_KEY` 로딩 여부를 검사하는 단일 테스트 (`__tests__/env.test.ts`).
 - 목적: 배포 전 환경 변수 누락으로 인한 런타임 오류 조기 감지.
 
 작성/실행 예시:
+
 ```bash
 # .env.test 생성 (CI 용)
 echo "GEMINI_API_KEY=dummy" > .env.test
@@ -132,22 +304,28 @@ npm run test
 ```
 
 모바일(React Native)
+
 - 기본 템플릿 렌더링 테스트(`mobile/soksol_mobile/__tests__/App.test.tsx`) 유지.
 - WebView 래퍼(`soksol_mobile/App.tsx`)는 현재 간단하여 별도 스냅샷 불필요 (필요 시 추후 추가).
 
 확장 아이디어(추가 미구현):
+
 - 챗 API route 모킹 후 응답 포맷 검증.
 - 시스템 프롬프트 규칙 위반 여부 간단 정적 검사.
 
 추가 주석:
+
 - `soksol_mobile/` 폴더는 TypeScript `exclude` 처리됨. 실제 모바일 변경은 `mobile/soksol_mobile/` 만 사용.
 
 ## 14. 신규 메타 & 안전 안내
+
 - `public/og.png` 추가 및 `layout.tsx` 메타(`openGraph.images`, `twitter`) 설정.
 - Footer 에 위기 대응 안내 번호(112 / 1393 등) 및 비의료 서비스 고지 추가.
 
 ## 15. 모바일 아이콘 / 스플래시 자동화(초안)
+
 `scripts/generate-icons.sh` (추가 예정) 예시 계획:
+
 ```
 #!/usr/bin/env bash
 # 요구: ImageMagick, inkscape (SVG → PNG), base source: assets/logo.svg
@@ -166,20 +344,25 @@ for s in "${sizes[@]}"; do
 done
 rm -f tmp_fore.png tmp_full.png
 ```
+
 Splash(안드로이드 12+): `values/styles.xml` 또는 `drawable/splash_background.xml` 추가 후 theme 속성 `android:windowSplashScreenBackground` 설정.
 
 실제 스크립트/리소스는 추후 `assets/branding/` 생성 후 반영.
 
 ### 실제 스크립트 사용
+
 ```bash
 chmod +x scripts/generate-icons.sh
 ./scripts/generate-icons.sh assets/branding/logo.png
 ```
+
 생성:
+
 - PWA: `public/icons/icon-192.png`, `icon-512.png`
-- Android: 각 `mipmap-*dpi/` ic_launcher* 갱신 (필요 시 git diff 확인)
+- Android: 각 `mipmap-*dpi/` ic_launcher\* 갱신 (필요 시 git diff 확인)
 
 ## 16. PWA 구성
+
 - `next-pwa` + `next.config.ts` 래핑 (개발 모드 자동 비활성)
 - `public/manifest.json` 작성
 - `layout.tsx`에 `<link rel="manifest">`, meta theme-color 추가
@@ -191,27 +374,34 @@ chmod +x scripts/generate-icons.sh
   - misc fallback: StaleWhileRevalidate 7일
 
 ## 17. API Rate Limiting
+
 간단한 in-memory (IP 기준 1분 10회). 서버리스/다중 인스턴스 배포 시 외부 스토리지/Edge KV 필요 (정책상 미사용).
 
 ## 18. 챗 위기 안내 1회성 배너
+
 - `sessionStorage` key: `soksol_crisis_shown`
 - 첫 방문에만 렌더링, 닫기 버튼 제공.
 
 ## 19. Splash / Branding 업데이트
+
 - Android Splash: `drawable/splash_background.xml` (그라데이션) + `styles.xml` 에 적용
 - 로고 소스: `assets/branding/logo.svg` (SVG → PNG 변환 가능)
 - 아이콘 스크립트: `scripts/generate-icons.sh` (ImageMagick 필요). 환경 미설치 시 에러 출력.
 
 ## 20. Gemini 호출 안정성
+
 - AbortController 기반 15초 타임아웃 → 504 처리
 - 오류 로깅 시 PII 최소화 (`safeLogError`) – 메시지 내용 전문 미저장/미출력
 
 ## 21. 오류 모니터링 (준비)
+
 - `@sentry/nextjs` 설치 및 `sentry.client.config.ts`, `sentry.server.config.ts` 생성
 - PII/채팅 내용 제거: beforeSend/breadcrumb 훅을 두어 요청 body(채팅 내용) 제거 및 예외 메시지 길이 제한을 적용. DSN 미설정 시 비활성화되도록 설계.
 
 ## 22. 추가 보안 / 안정화 정리
+
 현재 적용됨:
+
 - CSP(Content-Security-Policy) 헤더 (self 제한, 외부 최소 허용)
 - HSTS (Strict-Transport-Security 2년 + preload)
 - X-Frame-Options DENY (클릭재킹 방지)
@@ -225,6 +415,7 @@ chmod +x scripts/generate-icons.sh
 - 사용자 입력 저장/캐시 금지 정책 반영 (/privacy-check로 검증 가능)
 
 추가 고려 가능(선택):
+
 - nonce 기반 CSP script-src 강화 (빌드 시 헤더 삽입 로직 확장 필요)
 - Helmet 대체: Next headers()로 이미 대부분 커버 → 유지보수 단일화 위해 추가 패키지 미사용
 - API abuse 추가 보호: user-agent 패턴/빈도 필터 (저장 없는 메모리 룰)
@@ -250,34 +441,43 @@ Build and run locally:
 - Run: docker run -p 3000:3000 --env-file .env.local --name soksol-app soksol:latest
 
 Or with docker-compose:
+
 - docker-compose up --build
 
 Notes:
+
 - For production in a real deploy, set NODE_ENV=production and provide required secrets via environment variables or secret manager.
 - The Dockerfile runs the Next.js production server (npm start).
 
 ## 상세 업데이트 (보안 · CI · 배포 관련 변경 사항)
+
 아래는 최근 적용된 보안 및 CI 개선의 상세 요약입니다. 배포 전 반드시 이 항목들을 점검하세요.
 
 - .gitignore
+
   - `.env*` 전체 무시는 위험하여 로컬 비밀 파일들만 무시하도록 조정(`.env.local`, `.env`, `.env.*.local` 등). 예시 템플릿(`.env.local.example`, `.env.example`)은 추적(커밋)되도록 유지하여 실수로 템플릿을 지우거나 덮어쓰는 것을 방지함.
 
 - Secrets 검사
+
   - `scripts/check-secrets.js` 추가: 로컬/CI에서 필수 시크릿 누락(또는 플레이스홀더) 여부를 검사. CI에 넣어 배포 전 필수 값 검사 권장.
   - CI 워크플로 `ci-secrets-check.yml` 보강: 포크 PR에서 시크릿 접근 불가 문제를 우회하는 guard 추가. Android keystore 시크릿은 "베이스64가 제공되면 나머지 값들도 모두 존재해야 함(all-or-none)" 규칙을 적용.
 
 - CI 보안 파이프라인
+
   - `.github/workflows/ci-security.yml`: gitleaks 비밀 스캔, npm audit(허용 수준: moderate), Jest 테스트 실행을 포함. gitleaks/액션 로그 및 허위양성 여부는 주기적 검토 권장.
   - `.github/workflows/docker-build.yml`: Buildx로 이미지 빌드 후 Trivy 스캔, GHCR 푸시는 `GHCR_TOKEN` 유무에 따라 분기.
 
 - Docker 이미지(주의사항)
+
   - Dockerfile은 멀티스테이지로 구성되어 있으나 `npm ci`를 사용하므로 `package-lock.json` 부재 시 빌드 실패 가능. 두 옵션: lockfile을 커밋하거나 Dockerfile을 `npm install --production`로 대체 권장.
   - HEALTHCHECK에 `curl` 사용: 베이스 이미지에 curl 미설치 시 헬스체크 실패 가능 → 이미지 빌드 시 `curl` 설치 추가 또는 Node 기반 헬스체크로 대체 권장.
 
 - 로그·모니터링·PII 보호
+
   - Sentry 설정 파일(`sentry.server.config.ts`, `sentry.client.config.ts`)에 beforeSend/breadcrumb 훅을 두어 요청 body(채팅 내용) 제거 및 예외 메시지 길이 제한을 적용. DSN 미설정 시 비활성화되도록 설계.
 
 - 사전 배포 필수 체크리스트 (MVP)
+
   1. GitHub Secrets 등록: `GEMINI_API_KEY` (필수). Android 릴리스 시 `ANDROID_KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`. 권장: `GHCR_TOKEN`, `SENTRY_DSN`/`NEXT_PUBLIC_SENTRY_DSN`.
   2. 브랜치 보호 규칙 설정: Require status checks에 `CI - Security & Tests`, `CI - Secrets Presence Check`, `Docker Build & Scan`(선택) 포함.
   3. 로컬 테스트: `npm test`, `node scripts/check-secrets.js`, `npm run scan:secrets`(gitleaks).
