@@ -107,7 +107,16 @@ export default function ChatPage() {
         ))}
         {loading && (
           <div className="flex justify-start">
-            <div className="px-4 py-2 text-sm chat-bubble-loading animate-pulse">... 로딩 중</div>
+            <div className="px-4 py-3 max-w-[80%] text-sm leading-relaxed chat-bubble-loading loading-shimmer">
+              <div className="flex items-center gap-3">
+                <div className="typing-indicator">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <span className="text-sm font-medium">AI가 답변을 생각하고 있어요...</span>
+              </div>
+            </div>
           </div>
         )}
         <div ref={endRef} />
@@ -115,8 +124,15 @@ export default function ChatPage() {
       <div className="mt-4">
         <div className="relative">
           <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKey} placeholder="편하게 털어놓아도 좋아요..." rows={3} className="w-full resize-none rounded-xl border chat-input p-4 pr-24 text-sm" disabled={loading} aria-label="메시지 입력" />
-          <button onClick={handleSend} className="absolute bottom-3 right-3 px-5 py-2 rounded-full chat-send text-sm font-medium disabled:cursor-not-allowed" disabled={!input.trim() || loading} aria-disabled={!input.trim() || loading}>
-            {loading ? "전송중" : "보내기"}
+          <button onClick={handleSend} className="absolute bottom-3 right-3 px-5 py-2 rounded-full chat-send text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60" disabled={!input.trim() || loading} aria-disabled={!input.trim() || loading}>
+            {loading ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span>전송중...</span>
+              </div>
+            ) : (
+              "보내기"
+            )}
           </button>
         </div>
       </div>
