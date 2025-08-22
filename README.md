@@ -4,6 +4,14 @@
 
 ![soksol-시연](https://github.com/user-attachments/assets/3daf4cd4-264e-48ab-976f-8311df0f470c)
 
+<img width="343" height="611" alt="image" src="https://github.com/user-attachments/assets/9ef7f2a2-c723-41f6-abca-5136ba392bed" />
+
+<a href="https://youtube.com/shorts/EcTReJ0OemI?feature=share">
+ <img width="343" height="611" alt="image" src="https://github.com/user-attachments/assets/936380c5-d909-42ae-a5e3-da4d1d63889d" />
+</a>
+
+[🎬 Youtube Shorts 시연영상 보러가기](https://youtube.com/shorts/EcTReJ0OemI?feature=share)
+
 <details>
 <summary><h3>💡 WebView에서 웹 앱 빌드로 구현</h3></summary>
 
