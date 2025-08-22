@@ -49,41 +49,80 @@ next-env.d.ts
 # additional
 .env.test
 
-# mobile / native project ignores (merged from mobile/soksol_mobile/.gitignore)
-/mobile/soksol_mobile/node_modules/
-/mobile/soksol_mobile/.bundle/
-/mobile/soksol_mobile/.idea/
-/mobile/soksol_mobile/.gradle/
-/mobile/soksol_mobile/local.properties
-/mobile/soksol_mobile/.cxx/
-/mobile/soksol_mobile/android/**/build/
-/mobile/soksol_mobile/android/build/
-/mobile/soksol_mobile/ios/build/
-/mobile/soksol_mobile/ios/DerivedData/
-/mobile/soksol_mobile/Pods/
-/mobile/soksol_mobile/Podfile.lock
-/mobile/soksol_mobile/.expo/
-/mobile/soksol_mobile/.expo-shared/
-/mobile/soksol_mobile/.vscode/
-/mobile/soksol_mobile/.watchmanconfig
-/mobile/soksol_mobile/*.jsbundle
-/mobile/soksol_mobile/coverage/
-/mobile/soksol_mobile/.yarn/
-/mobile/soksol_mobile/.yarn/*
-!mobile/soksol_mobile/.yarn/patches
-!mobile/soksol_mobile/.yarn/plugins
-!mobile/soksol_mobile/.yarn/releases
-!mobile/soksol_mobile/.yarn/sdks
-!mobile/soksol_mobile/.yarn/versions
+# mobile / native project ignores (React Native SokSol)
+# 대용량 의존성 패키지들 (node_modules와 유사)
+/mobile/soksol_mobile/SokSol/node_modules/
+/mobile/soksol_mobile/SokSol/.bundle/
+/mobile/soksol_mobile/SokSol/Pods/
+/mobile/soksol_mobile/SokSol/vendor/bundle/
 
-# fastlane artifacts
-/mobile/soksol_mobile/fastlane/report.xml
-/mobile/soksol_mobile/fastlane/Preview.html
-/mobile/soksol_mobile/fastlane/screenshots
-/mobile/soksol_mobile/fastlane/test_output
+# IDE 및 에디터 설정 파일들
+/mobile/soksol_mobile/SokSol/.idea/
+/mobile/soksol_mobile/SokSol/.vscode/
+/mobile/soksol_mobile/SokSol/.kotlin/
 
-# ignore any keystore files (already covered but keep explicit)
+# 빌드 산출물 및 캐시
+/mobile/soksol_mobile/SokSol/.gradle/
+/mobile/soksol_mobile/SokSol/.cxx/
+/mobile/soksol_mobile/SokSol/android/build/
+/mobile/soksol_mobile/SokSol/android/**/build/
+/mobile/soksol_mobile/SokSol/android/.gradle/
+/mobile/soksol_mobile/SokSol/ios/build/
+/mobile/soksol_mobile/SokSol/ios/DerivedData/
+/mobile/soksol_mobile/SokSol/build/
+/mobile/soksol_mobile/SokSol/*.jsbundle
+/mobile/soksol_mobile/SokSol/coverage/
+
+# 로컬 환경 설정 파일들
+/mobile/soksol_mobile/SokSol/local.properties
+/mobile/soksol_mobile/SokSol/android/local.properties
+/mobile/soksol_mobile/SokSol/.watchmanconfig
+/mobile/soksol_mobile/SokSol/.metro-health-check*
+
+# 패키지 매니저 잠금 파일들 (선택사항 - 팀 정책에 따라)
+/mobile/soksol_mobile/SokSol/yarn.lock
+/mobile/soksol_mobile/SokSol/package-lock.json
+
+# Yarn 캐시
+/mobile/soksol_mobile/SokSol/.yarn/
+/mobile/soksol_mobile/SokSol/.yarn/*
+!mobile/soksol_mobile/SokSol/.yarn/patches
+!mobile/soksol_mobile/SokSol/.yarn/plugins
+!mobile/soksol_mobile/SokSol/.yarn/releases
+!mobile/soksol_mobile/SokSol/.yarn/sdks
+!mobile/soksol_mobile/SokSol/.yarn/versions
+
+# Expo 관련 (현재 미사용이지만 예방)
+/mobile/soksol_mobile/SokSol/.expo/
+/mobile/soksol_mobile/SokSol/.expo-shared/
+
+# Fastlane 빌드 결과물
+/mobile/soksol_mobile/SokSol/fastlane/report.xml
+/mobile/soksol_mobile/SokSol/fastlane/Preview.html
+/mobile/soksol_mobile/SokSol/fastlane/screenshots
+/mobile/soksol_mobile/SokSol/fastlane/test_output
+
+# 보안: 키스토어 및 인증서 파일들 (매우 중요!)
 **/*.keystore
+**/*.jks
+/mobile/soksol_mobile/SokSol/android/app/*.keystore
+/mobile/soksol_mobile/SokSol/android/app/*.jks
+/mobile/soksol_mobile/SokSol/android/app/my-release-key.keystore
+/mobile/soksol_mobile/SokSol/android/app/release-key.jks
+!mobile/soksol_mobile/SokSol/android/app/debug.keystore
+
+# 안드로이드 빌드 산출물
+/mobile/soksol_mobile/SokSol/android/app/build/
+/mobile/soksol_mobile/SokSol/android/*.apk
+/mobile/soksol_mobile/SokSol/android/*.apks
+/mobile/soksol_mobile/SokSol/android/*.aab
+/mobile/soksol_mobile/SokSol/android/universal.apk
+/mobile/soksol_mobile/SokSol/android/app-release.apks
+/mobile/soksol_mobile/SokSol/android/bundletool.jar
+
+# iOS 관련 (현재 미사용이지만 예방)
+/mobile/soksol_mobile/SokSol/ios/*.ipa
+/mobile/soksol_mobile/SokSol/ios/*.xcarchive
 
 # Build artifact from SWC/JS toolchain
 .swc/
@@ -103,3 +142,6 @@ git_grep_history_report.txt
 # end added
 
 # end mobile ignores
+
+# keystore
+android/keystores/*.keystore
