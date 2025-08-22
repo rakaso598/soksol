@@ -263,13 +263,16 @@ npm run build:android:release  # 안드로이드 릴리스 빌드
 - **Target**: Android 8.0+ (API 26+)
 - **Build**: AAB (Play Store) + APK (사이드로딩)
 
-## 📚 문서
+## 📚 문서 위치 안내
 
-- [개발자 가이드](./DEVELOPER_GUIDE.md) - 상세한 개발 및 기여 가이드
-- [아키텍처 문서](./ARCHITECTURE.md) - 시스템 설계 및 구조
-- [트러블슈팅](./TROUBLESHOOTING.md) - 실제 문제 해결 사례
-- [보안 정책](./SECURITY.md) - 보안 구현 및 정책
-- [개인정보 처리방침](./PRIVACY.md) - 프라이버시 정책
+- 모든 주요 문서는 `docs/` 폴더에 있습니다.
+- 예시: [docs/QUICK_START_GUIDE.md](docs/QUICK_START_GUIDE.md)
+
+- [개발자 가이드](./docs/DEVELOPER_GUIDE.md) - 상세한 개발 및 기여 가이드
+- [아키텍처 문서](./docs/ARCHITECTURE.md) - 시스템 설계 및 구조
+- [트러블슈팅](./docs/TROUBLESHOOTING.md) - 실제 문제 해결 사례
+- [보안 정책](./docs/SECURITY.md) - 보안 구현 및 정책
+- [개인정보 처리방침](./docs/PRIVACY.md) - 프라이버시 정책
 
 ## 🤝 기여하기
 
