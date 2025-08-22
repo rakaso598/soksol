@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
 import crypto from 'crypto';
 
 export async function GET() {

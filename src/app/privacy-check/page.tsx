@@ -68,7 +68,9 @@ export default function PrivacyCheckPage() {
       date: date.toLocaleDateString('ko-KR'),
       time: date.toLocaleTimeString('ko-KR', {
         hour12: false,
-        millisecond: true
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
       })
     };
   };
@@ -112,8 +114,8 @@ export default function PrivacyCheckPage() {
                 <button
                   onClick={() => setAutoRefresh(!autoRefresh)}
                   className={`px-4 py-2 rounded-lg text-sm ${autoRefresh
-                      ? 'bg-red-500 text-white hover:bg-red-600'
-                      : 'bg-green-500 text-white hover:bg-green-600'
+                    ? 'bg-red-500 text-white hover:bg-red-600'
+                    : 'bg-green-500 text-white hover:bg-green-600'
                     }`}
                 >
                   {autoRefresh ? '자동 새로고침 중지' : '자동 새로고침 시작'}
@@ -156,7 +158,7 @@ export default function PrivacyCheckPage() {
                   <div className="flex justify-between">
                     <span>Cache-Control:</span>
                     <span className={`font-mono ${serverStatus.headers['cache-control']?.includes('no-store')
-                        ? 'text-green-600' : 'text-red-600'
+                      ? 'text-green-600' : 'text-red-600'
                       }`}>
                       {serverStatus.headers['cache-control'] || '❌'}
                     </span>
@@ -164,7 +166,7 @@ export default function PrivacyCheckPage() {
                   <div className="flex justify-between">
                     <span>X-Data-Retention:</span>
                     <span className={`font-mono ${serverStatus.headers['x-data-retention'] === 'none'
-                        ? 'text-green-600' : 'text-red-600'
+                      ? 'text-green-600' : 'text-red-600'
                       }`}>
                       {serverStatus.headers['x-data-retention'] || '❌'}
                     </span>
@@ -172,7 +174,7 @@ export default function PrivacyCheckPage() {
                   <div className="flex justify-between">
                     <span>Pragma:</span>
                     <span className={`font-mono ${serverStatus.headers['pragma'] === 'no-cache'
-                        ? 'text-green-600' : 'text-red-600'
+                      ? 'text-green-600' : 'text-red-600'
                       }`}>
                       {serverStatus.headers['pragma'] || '❌'}
                     </span>
@@ -180,7 +182,7 @@ export default function PrivacyCheckPage() {
                   <div className="flex justify-between">
                     <span>X-No-Database:</span>
                     <span className={`font-mono ${serverStatus.headers['x-no-database'] === 'true'
-                        ? 'text-green-600' : 'text-red-600'
+                      ? 'text-green-600' : 'text-red-600'
                       }`}>
                       {serverStatus.headers['x-no-database'] || '❌'}
                     </span>
@@ -249,7 +251,7 @@ export default function PrivacyCheckPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="bg-blue-100 text-blue-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">3</span>
-                    <span>위의 "지금 확인" 버튼을 클릭합니다</span>
+                    <span>&quot;지금 확인&quot; 버튼을 클릭합니다</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="bg-blue-100 text-blue-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">4</span>
