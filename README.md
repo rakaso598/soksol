@@ -2,14 +2,14 @@
 
 ## [🎬 Youtube Shorts 시연영상 보러가기](https://youtube.com/shorts/EcTReJ0OemI?feature=share)
 
-<img width="690" height="893" alt="image" src="https://github.com/user-attachments/assets/5f5619eb-cc0c-4de9-82db-e5b7d2f905fa" />
+<img width="690" height="893" alt="image" src="docs/soksol_all_screenshot.png" />
 
 ![soksol-시연](https://github.com/user-attachments/assets/3daf4cd4-264e-48ab-976f-8311df0f470c)
 
 <details>
 <summary><h3>💡 WebView에서 웹 앱 빌드로 구현</h3></summary>
 
-<img width="856" height="702" alt="image" src="https://github.com/user-attachments/assets/c3e5cb90-f10f-4df0-b3cd-04359069b095" />
+<img width="856" height="702" alt="image" src="docs/soksol_animation.gif" />
 
 ### React Native: 웹뷰(WebView) vs. 네이티브 빌드 방식
 
