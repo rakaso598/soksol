@@ -1,0 +1,43 @@
+# Gitleaks configuration file
+# https://github.com/gitleaks/gitleaks
+
+[extend]
+# useDefault will extend the base configuration with the default gitleaks config:
+# https://github.com/gitleaks/gitleaks/blob/master/config/gitleaks.toml
+useDefault = true
+
+[allowlist]
+description = "Allowlisted files and patterns"
+
+# Allow test files and documentation to contain example keys
+paths = [
+    '''.env.example''',
+    '''.env.test''',
+    '''docs/''',
+    '''README.md''',
+    '''__tests__/''',
+    '''jest.setup.js''',
+]
+
+# Allow common test patterns
+regexes = [
+    '''test_api_key_for_testing''',
+    '''mock_''',
+    '''fake_''',
+    '''example_''',
+    '''dummy_''',
+]
+
+# Entropy threshold (default is 3.5)
+[rules.entropy]
+description = "Entropy based secret detection"
+regex = '''[a-zA-Z0-9+/]{20,}'''
+entropy = 4.0
+keywords = [
+    "password",
+    "secret",
+    "key", 
+    "token",
+    "api",
+    "auth"
+]
