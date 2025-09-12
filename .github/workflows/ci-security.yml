@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: ["main", "dev"]
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   security-and-tests:
     name: Security checks and tests
@@ -18,14 +22,16 @@ jobs:
 
       - name: Run gitleaks secret scan
         uses: zricethezav/gitleaks-action@v2
-        with:
-          args: detect --source=. --report-path=gitleaks-report.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload gitleaks report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: gitleaks-report
-          path: gitleaks-report.json
+          path: results.sarif
+          retention-days: 7
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
