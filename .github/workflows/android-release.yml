@@ -33,14 +33,20 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x mobile/soksol_mobile/SokSol/android/gradlew
 
-      - name: Build Android release (assembleRelease)
+      - name: Build Android release (signed if keystore available)
         working-directory: mobile/soksol_mobile/SokSol/android
         run: |
-          ./gradlew clean assembleRelease \
-            -Pandroid.injected.signing.store.file="$GITHUB_WORKSPACE/$ANDROID_KEYSTORE_FILE" \
-            -Pandroid.injected.signing.store.password="${{ secrets.KEYSTORE_PASSWORD }}" \
-            -Pandroid.injected.signing.key.alias="${{ secrets.KEY_ALIAS }}" \
-            -Pandroid.injected.signing.key.password="${{ secrets.KEY_PASSWORD }}"
+          if [ -n "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ] && [ -f "$GITHUB_WORKSPACE/$ANDROID_KEYSTORE_FILE" ]; then
+            echo "🔐 Building signed release with keystore..."
+            ./gradlew clean assembleRelease \
+              -Pandroid.injected.signing.store.file="$GITHUB_WORKSPACE/$ANDROID_KEYSTORE_FILE" \
+              -Pandroid.injected.signing.store.password="${{ secrets.KEYSTORE_PASSWORD }}" \
+              -Pandroid.injected.signing.key.alias="${{ secrets.KEY_ALIAS }}" \
+              -Pandroid.injected.signing.key.password="${{ secrets.KEY_PASSWORD }}"
+          else
+            echo "ℹ️  Building unsigned release (no keystore configured)..."
+            ./gradlew clean assembleRelease
+          fi
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
