@@ -1,0 +1,29 @@
+# Gitleaks configuration file
+# https://github.com/gitleaks/gitleaks
+
+[extend]
+# useDefault will extend the base configuration with the default gitleaks config:
+# https://github.com/gitleaks/gitleaks/blob/master/config/gitleaks.toml
+useDefault = true
+
+[allowlist]
+description = "Allowlisted files and patterns"
+
+# Allow test files and documentation to contain example keys
+paths = [
+    ".env.example",
+    ".env.test",
+    "docs/",
+    "README.md",
+    "__tests__/",
+    "jest.setup.js",
+]
+
+# Allow common test patterns
+regexes = [
+    "test_api_key_for_testing",
+    "mock_",
+    "fake_",
+    "example_",
+    "dummy_",
+]

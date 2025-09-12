@@ -1,14 +1,46 @@
 version: 2
 updates:
+  # Main project (Next.js)
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    allow:
+      - dependency-type: "all"
+    labels:
+      - "dependencies"
+      - "security-updates"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+  # React Native Mobile App
+  - package-ecosystem: "npm"
+    directory: "/mobile/soksol_mobile/SokSol"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
     open-pull-requests-limit: 5
     allow:
       - dependency-type: "all"
-    automerge: true
-    automerge-type: "branch"
-    # Only allow auto-merge for non-breaking updates via GitHub dependency graph
-    # NOTE: GitHub respects semver ranges and will label PRs accordingly.
-    # For added safety, we rely on branch protection requiring CI to pass before merge.
+    labels:
+      - "dependencies"
+      - "mobile"
+    commit-message:
+      prefix: "deps(mobile)"
+      include: "scope"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 3
+    labels:
+      - "github-actions"
+    commit-message:
+      prefix: "ci"
