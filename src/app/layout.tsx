@@ -61,7 +61,10 @@ export default function RootLayout({
               <Image src="/logo.svg" alt="속솔 로고" width={40} height={40} className="w-10 h-10" />
               <span className="text-[#10B981] font-semibold text-xl leading-none">속솔</span>
             </Link>
-            <div className="text-xs text-[var(--foreground-soft)]">대화는 저장되지 않습니다</div>
+            <Link href="/privacy-check" className="privacy-proof-btn" aria-label="개인정보 비저장 증명 페이지로 이동">
+              <span className="lock-icon">🔒</span>
+              <span>비저장 증명</span>
+            </Link>
           </div>
         </header>
 
