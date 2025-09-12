@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Build image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: false
@@ -56,7 +56,7 @@ jobs:
 
       - name: Optionally push image to GHCR
         if: ${{ secrets.GHCR_TOKEN != '' }}
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
