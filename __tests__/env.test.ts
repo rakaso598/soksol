@@ -7,7 +7,7 @@ describe('Environment variable loading', () => {
     } else {
       console.log('ℹ️  GEMINI_API_KEY not set - API features will be limited in runtime');
     }
-    
+
     // 테스트는 항상 통과하도록 설정
     expect(true).toBe(true);
   });
